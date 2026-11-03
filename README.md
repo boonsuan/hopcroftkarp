@@ -16,16 +16,18 @@ bipartite matching. It works in *rounds*. Exercise 15 proposes a family of slow
 inputs, *Tchoukaillon graphs*; exercise 16 asks whether they exist, and its
 answer asks whether any graph can force more rounds. The notes show:
 
-- **The exact maximum.** A graph whose maximum matching has *s* edges can make
-  Algorithm H perform at most ⌊√(4s+1)⌋ − 1 rounds, and *staircase graphs*
-  attain this for every *s*. They are planar graphs of maximum degree three,
-  with input orders under which every step of the algorithm is proved.
-- **Beating Tchoukaillon.** This beats a Tchoukaillon graph from *s* = 9 on
-  (apart from a few small sizes), by about (2 − √π)√s rounds.
+- **The exact maximum.** A graph whose maximum matching has $s$ edges can make
+  Algorithm H perform at most $`R(s) = \lfloor \sqrt{4s+1} \rfloor - 1`$
+  rounds, and *staircase graphs* attain this for every $s$. They are planar
+  graphs of maximum degree three, with input orders under which every step of
+  the algorithm is proved.
+- **Beating Tchoukaillon.** This beats a Tchoukaillon graph from $s = 9$ on
+  (apart from a few small sizes), by about $`(2-\sqrt{\pi})\sqrt{s}`$ rounds.
 - **The literal definition.** Read literally, exercise 15's definition can be
-  met only for *s* ∈ {1, 2, 3, 4, 5, 8, 9}.
+  met only for $`s \in \{1, 2, 3, 4, 5, 8, 9\}`$.
 - **The weaker readings.** Partial results on the weaker readings, which remain
-  open.
+  open: explicit realizations for every $`s \le 57`$, and a padding step that
+  turns a realization for $s = 2h$ with $`3 \mid h`$ into one for $s + 2$.
 
 References are to the zeroth printing of Pre-Fascicle 14A, revision −88, dated
 18 September 2026. A pre-fascicle is a working draft, so page and exercise

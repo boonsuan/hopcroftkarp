@@ -20,7 +20,7 @@ npm run build     # production build in dist/ (includes the report PDF)
 | `src/main.ts` | Entry point: theme, sound controls, the chapter menu, and every widget. |
 | `src/engine/algorithmH.ts` | A step-by-step port of the Python simulator. It records a snapshot after every step: matching, queue, dag, reverse lists, search path, and work counters. |
 | `src/engine/examples.ts` | The example graphs of the report (staircase graphs, Knuth's 16-pair graph, the 8-pair tree, halving and caterpillar graphs, the six-pair graph, and the catalog). |
-| `src/engine/numbers.ts` | The Tchoukaillon schedule, Tchoukaillon numbers Ч_n, quarter-squares Q_n, and R(s), T(s). |
+| `src/engine/numbers.ts` | The Tchoukaillon schedule, Tchoukaillon numbers $`\text{Ч}_n`$, quarter-squares $`Q_n`$, and $R(s)$, $T(s)$. |
 | `src/ui/` | Shared pieces: a small keyed SVG renderer (`scene.ts`), synthesized sounds (`sound.ts`), the light/dark theme, the chapter menu, icons, KaTeX settings, and form controls. |
 | `src/widgets/` | One file per interactive figure. |
 | `src/styles/main.css` | Design tokens for light and dark mode (the report's palette) and all styles. |
@@ -48,7 +48,7 @@ Each needs Python 3; the requirements are listed at the top of each file.
 | Script | When to run it |
 | --- | --- |
 | `scripts/report_pages.py` | After rebuilding the report: reads the PDF's outline into `src/data/report-pages.json`. |
-| `scripts/make_social.py` | After changing the report's title page or the favicon: renders `public/og.png` (1200×630, for link previews) and the PNG icons. |
+| `scripts/make_social.py` | After changing the report's title page or the favicon: renders `public/og.png` (1200 × 630 pixels, for link previews) and the PNG icons. |
 | `scripts/subset_fonts.py` | After adding fonts or characters outside the usual ranges: trims the fonts in `src/fonts/` to the characters the site uses. |
 
 ## Correctness
