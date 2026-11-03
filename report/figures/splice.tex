@@ -1,0 +1,30 @@
+% Theorem U: two new paths Q_i, Q_j touching the old SAP P at e_i, e_j.
+\begin{tikzpicture}[x=1.12cm,y=1cm]
+% P after augmentation: g0 b1 g1 b2 g2 b3 g3 b4 g4 b5, couples g_{k-1} b_k
+\foreach \lab/\x in {g_0/0,g_1/2,g_2/4,g_3/6,g_4/8}{\node[girl] (\lab) at (\x,0) {$\lab$};}
+\foreach \lab/\x in {b_1/1,b_2/3,b_3/5,b_4/7,b_5/9}{\node[boy] (\lab) at (\x,0) {$\lab$};}
+% free girls / boys of Q_i and Q_j
+\node[girl,free] (qi0) at (1.2,2.0) {};
+\node[boy,free]  (qi1) at (1.6,-2.0) {};
+\node[girl,free] (qj0) at (5.6,2.0) {};
+\node[boy,free]  (qj1) at (5.0,-2.0) {};
+\begin{scope}[on background layer]
+  % the spliced path
+  \draw[sap] (qj0.center) .. controls (6.3,1.4) and (7.2,1.0) .. (b_4.center)
+     -- (g_3.center) -- (b_3.center) -- (g_2.center) -- (b_2.center) -- (g_1.center)
+     .. controls (1.6,-.8) and (1.2,-1.4) .. (qi1.center);
+\end{scope}
+% couples e_k of the new matching along P
+\draw[couple] (g_0)--(b_1) (g_1)--(b_2) (g_2)--(b_3) (g_3)--(b_4) (g_4)--(b_5);
+\draw[edge,line width=.75pt] (b_1)--(g_1) (b_2)--(g_2) (b_3)--(g_3) (b_4)--(g_4);
+% Q_i and Q_j (schematic)
+\draw[boydraw,line width=.8pt,densely dashed] (qi0) .. controls (2.2,1.5) and (3,1.0) .. (b_2);
+\draw[boydraw,line width=.8pt,densely dashed] (g_1) .. controls (1.6,-.8) and (1.2,-1.4) .. (qi1);
+\draw[girldraw,line width=.8pt,densely dashed] (qj0) .. controls (6.3,1.4) and (7.2,1.0) .. (b_4);
+\draw[girldraw,line width=.8pt,densely dashed] (g_3) .. controls (5.6,-.8) and (5.2,-1.4) .. (qj1);
+\node[font=\small,boydraw] at (2.6,1.75) {$A_i$};
+\node[font=\small,girldraw] at (7.0,1.75) {$A_j$};
+\node[font=\footnotesize,anchor=north] at (2.5,-.32) {$e_i$};
+\node[font=\footnotesize,anchor=north] at (6.5,-.32) {$e_j$};
+\node[font=\small,anchor=west] at (9.4,0) {$S$};
+\end{tikzpicture}

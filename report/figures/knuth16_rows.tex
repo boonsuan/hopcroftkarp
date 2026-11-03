@@ -1,0 +1,45 @@
+% Basic-row matrices of answer 15(d).  Rows of one colour are merged by a
+% single SAP of the next round (green: a row that a SAP consumes whole).
+\begin{tikzpicture}[
+   cellbox/.style={draw=black!25,minimum width=4.6mm,minimum height=4.3mm,
+     inner sep=0pt,font=\scriptsize},
+   hd/.style={font=\footnotesize,anchor=south},
+   mstep/.style={-{Stealth},black!45},
+   steplab/.style={font=\tiny,text=black!60,below}]
+\def\w{.48}
+\newcommand{\mrow}[4]{% x, y, list, colour
+  \foreach \v [count=\i] in {#3}{
+    \node[cellbox,fill=#4!35] at ({#1+(\i-1)*\w},{#2}) {\v};}}
+\def\h{.43}
+% L = 2
+\node[hd] at ({0+.5*\w},.3) {$L=2$, $f=8$};
+\foreach \a/\b/\c [count=\k from 0] in {1/2/rowA,3/4/rowA,5/6/rowA,7/8/rowB,9/10/rowB,11/12/rowB,13/14/rowC,15/16/rowC}
+  {\mrow{0}{-\k*\h}{\a,\b}{\c}}
+\draw[mstep] (1.0,-1.4)--(1.75,-1.4) node[steplab,midway] {3 SAPs};
+% L = 3
+\def\x{2.05}
+\node[hd] at ({\x+\w},.3) {$L=3$, $f=5$};
+\mrow{\x}{0}{1,2,4}{rowA}
+\mrow{\x}{-\h}{3,5,6}{rowA}
+\mrow{\x}{-2*\h}{7,8,10}{rowA}
+\mrow{\x}{-3*\h}{9,11,12}{rowA}
+\mrow{\x}{-4*\h}{13,14,16}{rowC}
+\draw[mstep] (3.55,-.65)--(4.3,-.65) node[steplab,midway] {2 SAPs};
+% L = 4
+\def\x{4.6}
+\node[hd] at ({\x+1.5*\w},.3) {$L=4$, $f=3$};
+\mrow{\x}{0}{1,2,4,6}{rowA}
+\mrow{\x}{-\h}{3,5,8,10}{rowA}
+\mrow{\x}{-2*\h}{7,9,11,12}{rowA}
+\draw[mstep] (6.6,-.43)--(7.35,-.43) node[steplab,midway] {1 SAP};
+% L = 5
+\def\x{7.65}
+\node[hd] at ({\x+2*\w},.3) {$L=5$, $f=2$};
+\mrow{\x}{0}{1,2,4,6,10}{rowA}
+\mrow{\x}{-\h}{3,7,9,11,12}{rowA}
+\draw[mstep] (10.1,-.2)--(10.85,-.2) node[steplab,midway] {1 SAP};
+% L = 6
+\def\x{11.15}
+\node[hd] at ({\x+2.5*\w},.3) {$L=6$, $f=1$};
+\mrow{\x}{0}{1,2,4,6,10,12}{rowA}
+\end{tikzpicture}

@@ -1,0 +1,53 @@
+\begin{tikzpicture}[]
+\begin{scope}[on background layer]
+\draw[sap] (0.000,-1.230) -- (1.550,-2.460) -- (3.100,-1.640) -- (4.650,-1.640) -- (6.200,-0.820) -- (7.750,-1.230);
+\end{scope}
+\node[girl] (g4) at (1.550,0.000) {$g_{4}$};
+\node[girl] (g3) at (1.550,-0.820) {$g_{3}$};
+\node[girl] (g2) at (1.550,-1.640) {$g_{2}$};
+\node[girl] (g1) at (1.550,-2.460) {$g_{1}$};
+\node[boy] (b1) at (3.100,0.000) {$b_{1}$};
+\node[boy] (b4) at (3.100,-0.820) {$b_{4}$};
+\node[boy] (b6) at (3.100,-1.640) {$b_{6}$};
+\node[boy] (b8) at (3.100,-2.460) {$b_{8}$};
+\node[girl] (g5) at (4.650,0.000) {$g_{5}$};
+\node[girl] (g7) at (4.650,-0.820) {$g_{7}$};
+\node[girl] (g8) at (4.650,-1.640) {$g_{8}$};
+\node[girl] (g9) at (4.650,-2.460) {$g_{9}$};
+\node[boy] (b2) at (6.200,0.000) {$b_{2}$};
+\node[boy] (b5) at (6.200,-0.820) {$b_{5}$};
+\node[boy] (b7) at (6.200,-1.640) {$b_{7}$};
+\node[boy] (b9) at (6.200,-2.460) {$b_{9}$};
+\node[circle,draw,inner sep=1pt,minimum size=5mm] (bot) at (0.000,-1.230) {$\bot$};
+\node[circle,draw,inner sep=1pt,minimum size=5mm] (top) at (7.750,-1.230) {$\top$};
+\node[girl,dashed,opacity=.45] (gx6) at (7.200,0.550) {$g_{6}$};
+\draw[arc,dashed,opacity=.45] (gx6) -- (b2);
+\draw[arc] (g4) -- (bot);
+\draw[arc] (g3) -- (bot);
+\draw[arc] (g2) -- (bot);
+\draw[arc] (g1) -- (bot);
+\draw[arc] (g5) -- (b1);
+\draw[arc] (g7) -- (b4);
+\draw[arc] (g8) -- (b6);
+\draw[arc] (g9) -- (b8);
+\draw[arc] (b1) -- node[pos=.24,fill=white,inner sep=.5pt,font=\scriptsize] {1} (g3);
+\draw[arc] (b1) -- node[pos=.24,fill=white,inner sep=.5pt,font=\scriptsize] {2} (g4);
+\draw[arc] (b4) -- node[pos=.24,fill=white,inner sep=.5pt,font=\scriptsize] {1} (g2);
+\draw[arc] (b4) -- node[pos=.24,fill=white,inner sep=.5pt,font=\scriptsize] {2} (g3);
+\draw[arc] (b6) -- node[pos=.24,fill=white,inner sep=.5pt,font=\scriptsize] {1} (g1);
+\draw[arc] (b6) -- node[pos=.24,fill=white,inner sep=.5pt,font=\scriptsize] {2} (g2);
+\draw[arc] (b8) --  (g1);
+\draw[arc] (b2) -- node[pos=.24,fill=white,inner sep=.5pt,font=\scriptsize] {1} (g7);
+\draw[arc] (b2) -- node[pos=.24,fill=white,inner sep=.5pt,font=\scriptsize] {2} (g5);
+\draw[arc] (b5) -- node[pos=.24,fill=white,inner sep=.5pt,font=\scriptsize] {1} (g8);
+\draw[arc] (b5) -- node[pos=.24,fill=white,inner sep=.5pt,font=\scriptsize] {2} (g7);
+\draw[arc] (b7) --  (g8);
+\draw[arc] (b9) --  (g9);
+\draw[arc] (top) -- (b5);
+\draw[arc] (top) -- (b7);
+\draw[arc] (top) -- (b9);
+\node at (1.550,-3.210) {$G_0$};
+\node at (3.100,-3.210) {$B_1$};
+\node at (4.650,-3.210) {$G_1$};
+\node at (6.200,-3.210) {$B_2$};
+\end{tikzpicture}

@@ -1,0 +1,52 @@
+\begin{tikzpicture}[]
+\begin{scope}[on background layer]
+\end{scope}
+\draw[edge] (-0.468,-5.967) -- (0.468,-4.563);
+\draw[pedge] (-0.468,-5.967) -- (0.468,-6.669);
+\draw[edge] (-0.468,-3.861) -- (0.468,-2.457);
+\draw[pedge] (-0.468,-3.861) -- (0.468,-4.563);
+\draw[edge] (-0.468,-1.755) -- (0.468,-0.351);
+\draw[pedge] (-0.468,-1.755) -- (0.468,-2.457);
+\draw[pedge] (-0.468,0.351) -- (0.468,-0.351);
+\draw[couple] (2.002,0.351) -- (0.468,-0.351);
+\draw[pedge] (2.002,0.351) -- (2.938,-0.351);
+\draw[couple] (4.472,0.351) -- (2.938,-0.351);
+\draw[pedge] (4.472,0.351) -- (5.408,-0.351);
+\draw[couple] (2.002,-1.755) -- (0.468,-2.457);
+\draw[edge] (2.002,-1.755) -- (2.938,-0.351);
+\draw[pedge] (2.002,-1.755) -- (2.938,-2.457);
+\draw[couple] (2.002,-3.861) -- (0.468,-4.563);
+\draw[edge] (2.002,-3.861) -- (2.938,-2.457);
+\draw[pedge] (2.002,-3.861) -- (2.938,-4.563);
+\draw[couple] (2.002,-5.967) -- (0.468,-6.669);
+\draw[pedge] (2.002,-5.967) -- (2.938,-6.669);
+\node[girl,free] at (-0.468,-5.967) {1};
+\node[girl,free] at (-0.468,-3.861) {2};
+\node[girl,free] at (-0.468,-1.755) {3};
+\node[girl,free] at (-0.468,0.351) {4};
+\node[girl] at (2.002,0.351) {5};
+\node[girl] at (4.472,0.351) {6};
+\node[girl] at (2.002,-1.755) {7};
+\node[girl] at (2.002,-3.861) {8};
+\node[girl] at (2.002,-5.967) {9};
+\node[boy] at (0.468,-0.351) {1};
+\node[boy] at (2.938,-0.351) {2};
+\node[boy,free] at (5.408,-0.351) {3};
+\node[boy] at (0.468,-2.457) {4};
+\node[boy,free] at (2.938,-2.457) {5};
+\node[boy] at (0.468,-4.563) {6};
+\node[boy,free] at (2.938,-4.563) {7};
+\node[boy] at (0.468,-6.669) {8};
+\node[boy,free] at (2.938,-6.669) {9};
+\node[lab,font=\scriptsize,text=black!50,anchor=west] at (-0.078,0.468) {$(1,1)$};
+\node[lab,font=\scriptsize,text=black!50,anchor=west] at (2.392,0.468) {$(1,2)$};
+\node[lab,font=\scriptsize,text=black!50,anchor=west] at (4.862,0.468) {$(1,3)$};
+\node[lab,font=\scriptsize,text=black!50,anchor=west] at (-0.078,-1.638) {$(2,1)$};
+\node[lab,font=\scriptsize,text=black!50,anchor=west] at (2.392,-1.638) {$(2,2)$};
+\node[lab,font=\scriptsize,text=black!50,anchor=west] at (-0.078,-3.744) {$(3,1)$};
+\node[lab,font=\scriptsize,text=black!50,anchor=west] at (2.392,-3.744) {$(3,2)$};
+\node[lab,font=\scriptsize,text=black!50,anchor=west] at (-0.078,-5.850) {$(4,1)$};
+\node[lab,font=\scriptsize,text=black!50,anchor=west] at (2.392,-5.850) {$(4,2)$};
+\draw[edgecol,line width=.5pt,dash pattern=on 1.2pt off 1.6pt] (2.938,-4.563) -- (2.002,-5.967);
+\node[lab,anchor=west,font=\scriptsize] at (2.610,-5.315) {omitted};
+\end{tikzpicture}

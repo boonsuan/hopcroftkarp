@@ -1,0 +1,258 @@
+\section{Exercise~15 and Tchoukaillon graphs}
+\label{sec:ex15}
+
+Exercise~15 assumes that the input has a perfect matching, $s=M=N$, and
+looks for a graph on which $L$ increases by only~1 per round while each
+round removes as few SAPs as possible. This section explains the
+counting behind the exercise, where the Tchoukaillon numbers enter, and
+why the definition of a Tchoukaillon graph can be read in more than one
+way.
+
+\subsection{Basic paths and parts (a) and (b)}
+
+Fix a perfect matching $P$ and a current matching with $f$ free girls,
+whose next dag has level~$L$. Recall that the basic paths are the $f$
+vertex-disjoint augmenting paths in the symmetric difference of the
+current matching with~$P$. We also need the number
+\[
+   \nu=\text{the largest number of vertex-disjoint SAPs of the current matching}.
+\]
+Always $\nu\le f$, since each SAP uses its own free girl.
+
+\begin{lemma}[Exercise~15(a), (b)]
+\label{lem:15ab}
+\leavevmode
+\begin{enumerate}[label=(\alph*)]
+\item If every augmenting path of the current matching has level~$L$, then
+  the dag satisfies
+  \(f\le\min\{|G_0|,|B_1|,\ldots,|G_{L-1}|,|B_L|\}\).
+\item Every maximal set of vertex-disjoint SAPs has at least
+  $\ceil{\nu/(L+1)}$ members. In particular, if there are $f$
+  vertex-disjoint SAPs (as there are under the hypothesis of~(a)), steps
+  \Hs{11}--\Hs{17} find at least $\ceil{f/(L+1)}$ of them.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) Under the hypothesis, the $f$ basic paths are SAPs. Let
+$g_0\sg b_1\db g_1\sg\cdots\sg b_L$ be one of them. Its first part shows
+that $g_j$ has distance at most~$2j$. If the distance were smaller, a
+shortest directed path to $g_j$ followed by the rest of the SAP would be an
+alternating walk from a free girl to a free boy with fewer than $2L-1$
+edges; cutting out the closed loops of that walk would leave an
+augmenting path of smaller level, which is impossible. So $g_j\in G_j$,
+and likewise $b_j\in B_j$. Disjoint paths contribute different vertices
+to each level.
+
+(b) Let $S$ be a SAP. Its interior vertices are matched, and any
+augmenting path through a matched vertex also contains that vertex's
+mate. So a path that meets $S$ meets it at $g_0$, at $b_L$, or in one
+of the $L-1$ couples of~$S$. Paths of a vertex-disjoint family can
+share none of these, so $S$ meets at most $L+1$ members of the family.
+Take a family of $\nu$ disjoint SAPs: each of them must meet some path of
+the maximal set (otherwise it could be added), and the bound follows.
+\end{proof}
+
+The hypothesis of~(a) is stronger than what~(b) needs. This difference
+between ``all augmenting paths have level~$L$'' and ``there are $f$
+disjoint SAPs'' leads to the three readings of Section~\ref{sec:readings},
+and the gap between $\nu$ and $f$ is what the worst cases of
+Section~\ref{sec:staircase} exploit.
+
+\subsection{The schedule and the Tchoukaillon numbers}
+\label{sec:schedule}
+
+A maximal matching has at least $\ceil{s/2}$ couples, because each of
+the $s$ edges of $P$ must touch one of its couples and each couple
+touches at most two of them. So~\Hs1 leaves at most $\floor{s/2}$ girls
+free. Exercise~15(c) asks for a graph that starts with this largest
+possible number of free girls and, at every level~$L=2,3,\ldots$,
+removes only the number of SAPs that Lemma~\ref{lem:15ab}(b) forces when
+$\nu=f$. The numbers of free girls and of SAPs removed then follow the
+\emph{Tchoukaillon schedule}
+\begin{equation}
+  f_2=\floor{s/2},\qquad a_L=\ceil{f_L/(L+1)},\qquad
+  f_{L+1}=f_L-a_L=\floor{Lf_L/(L+1)},
+  \label{eq:schedule}
+\end{equation}
+which stops when $f$ reaches~0. For $s=16$ it reads:
+\begin{center}
+\begin{tabular}{c|ccccc}
+\toprule
+level~$L$ & 2&3&4&5&6\\
+free girls~$f_L$ & 8&5&3&2&1\\
+SAPs removed~$a_L$ & 3&2&1&1&1\\
+\bottomrule
+\end{tabular}
+\end{center}
+With~\Hs1 counted as round~1, that is six rounds.
+
+Let $T(s)$ be the number of rounds of the schedule, that is, the last
+level~$L$ with $f_L>0$ (and $T(1)=1$, $T(0)=0$). Answer~15(c) observes
+that~\eqref{eq:schedule} is the recurrence of exercise~11(b) for the
+solitaire game Tchoukaillon: in Knuth's notation there, $f_L=l_{L-1,s}$
+and $a_L=m_{L,s}$, by parts (ii) and~(i). Consequently
+\begin{equation}
+  T(s)=n\quad\iff\quad \Ch_n\le s<\Ch_{n+1},
+  \label{eq:Tdef}
+\end{equation}
+where the \emph{Tchoukaillon number} $\Ch_n$ is the least number of
+stones for which the winning strategy uses pit~$n$:
+\[
+\begin{array}{c|cccccccccccccc}
+ n&1&2&3&4&5&6&7&8&9&10&11&12&13&14\\\hline
+ \Ch_n&1&2&4&6&10&12&18&22&30&34&42&48&58&60
+\end{array}
+\]
+One can also see~\eqref{eq:Tdef} directly. Run the schedule backwards:
+the last round has $f_n=1$, and the smallest $f_{L}$ that leads to a
+given $f_{L+1}$ is $\ceil{(L+1)f_{L+1}/L}$. This gives Knuth's formula
+$\Ch_n=\bigl\lceil2\bigl\lceil\frac32\bigl\lceil\frac43\cdots
+\bigl\lceil\frac n{n-1}\bigr\rceil\cdots\bigr\rceil\bigr\rceil\bigr\rceil$
+of exercise~11(c). Exercise~11(d) shows that
+$\Ch_n=n^2/\pi+O(n^{4/3})$, so $T(s)=\sqrt{\pi s}+O(s^{1/6})$.
+
+These are statements about the \emph{numbers} in~\eqref{eq:schedule}.
+Whether any graph realizes them is the question of exercise~16.
+
+\subsection{Knuth's sixteen-pair example}
+\label{sec:knuth16}
+
+Answer~15(d) describes a graph with $s=16$ by a sequence of
+matrices (Fig.~\ref{fig:knuth16rows}). Label the edges of the perfect
+matching $g_k\sg b_k$, $1\le k\le16$. A row such as $1\ 2\ 4$ stands for
+the basic path $g_1\sg b_1\db g_2\sg b_2\db g_4\sg b_4$: its cells are the
+pairs it visits, and moving one cell to the right means following a
+couple. Each matrix lists the basic paths before one round. All its rows
+have $L$ cells, so they are $f$ disjoint SAPs and $\nu=f$. The graph has
+the 16 edges $g_kb_k$ and 19 more, listed in~\eqref{eq:knuth16edges} of
+Appendix~\ref{app:knuth16}.
+
+An edge $g_ib_j$ with $i\ne j$ jumps from pair~$i$ to pair~$j$. Every SAP
+that Algorithm~H finds in this graph moves through the current matrix by
+following couples to the right along a row and by such jumps from row to
+row within a column. For
+example, the first round finds the SAP $g_5\sg b_3\db g_4\sg b_2$: it
+starts at the first cell of row~$5\ 6$, jumps to the first cell of
+row~$3\ 4$, moves right along that row, and jumps up to the last cell of
+row~$1\ 2$, whose boy is free. Augmenting replaces these three rows by
+the two rows~$1\ 2\ 4$ and $3\ 5\ 6$ of the next matrix. In general a SAP
+that meets $k$ rows leaves $k-1$ rows, each with one more cell.
+
+\begin{figure}[ht]
+\centering
+\input{figures/knuth16_rows}
+\caption{The matrices of answer~15(d). Each row is a basic path, given by
+the indices of the pairs of the perfect matching that it visits. Within
+each matrix, rows of the same colour are merged by one SAP of the next
+round (colours are assigned separately in each matrix); the green row at
+$L=3$ is itself a SAP, and augmenting along it matches all three of its
+pairs by $P$.}
+\label{fig:knuth16rows}
+\end{figure}
+
+The first matrix says that the matching after~\Hs1 consists of the
+couples $b_1g_2$, $b_3g_4$, \dots, $b_{15}g_{16}$. But the graph also
+contains the edges $b_5g_8$ and $b_4g_6$, and so this matching has
+augmenting paths of two different levels starting at the same free girl
+(Fig.~\ref{fig:knuth16paths}):
+\begin{equation}
+  \pi_2=g_7\sg b_7\db g_8\sg b_8\quad(\text{level }2),\qquad
+  \pi_3=g_7\sg b_7\db g_8\sg b_5\db g_6\sg b_4\quad(\text{level }3).
+  \label{eq:PQ}
+\end{equation}
+So the hypothesis of~15(a), that every augmenting path has the same
+level, already fails at the first round. On the other hand,
+Appendix~\ref{app:knuth16} gives explicit input orders for this graph
+under which Algorithm~H follows the schedule $8,5,3,2,1,0$ and passes
+through exactly the matrices of Fig.~\ref{fig:knuth16rows}.
+
+\begin{figure}[ht]
+\centering
+\input{figures/knuth16_paths}
+\caption{Part of Knuth's 16-pair graph after~\Hs1. Both $\pi_2$ (level~2,
+three edges) and $\pi_3$ (level~3, five edges) are augmenting paths.}
+\label{fig:knuth16paths}
+\end{figure}
+
+\subsection{Three readings of the definition}
+\label{sec:readings}
+
+Exercise~15(c) calls $G$ a Tchoukaillon graph if it might cause
+Algorithm~H ``to continually satisfy assumption (a)'' while following the
+schedule. Since the algorithm is deterministic, ``might'' must refer to
+the input order of Section~\ref{sec:input}. The example of
+Fig.~\ref{fig:knuth16paths} shows that the matrices of answer~15(d)
+provide something weaker than assumption~(a). We therefore name three
+properties that a round with $f$ free girls at level~$L$ may have:
+\begin{itemize}
+\item[$\Up$:] every augmenting path has level~$L$ (the literal hypothesis
+  of 15(a); $\Up$ for ``uniform'');
+\item[$\Bp$:] there are $f$ vertex-disjoint SAPs, that is, $\nu=f$;
+  equivalently, for some perfect matching all $f$ basic paths are SAPs
+  (what the matrices show; $\Bp$ for ``full'');
+\item[$\Op$:] no condition beyond the numbers.
+\end{itemize}
+
+\begin{definition}
+An ordered graph with a perfect matching \emph{realizes the Tchoukaillon
+schedule} if~\Hs1 leaves $\floor{s/2}$ free girls and every later round
+has the level~$L$ and the number of SAPs $a_L$ prescribed by
+\eqref{eq:schedule}. A realization is \emph{literal} if every round after
+\Hs1 has property~$\Up$, and \emph{basic-row} if every such round has
+property~$\Bp$. We call a realization with no extra condition
+\emph{operational}.
+\end{definition}
+
+Property $\Up$ implies $\Bp$, since the basic paths are augmenting paths.
+Property $\Bp$ is exactly what Lemma~\ref{lem:15ab}(b) needs to force
+$\ceil{f/(L+1)}$ SAPs. Neither implication reverses: Knuth's graph is a
+basic-row realization that is not literal, and Section~\ref{sec:no-cover}
+gives an operational realization (an 8-pair tree) in which a round has
+two free girls but only one SAP, so it is not basic-row.
+
+Which reading did Knuth intend? The literal one is what 15(a) and 15(c)
+say. The matrices of 15(d) support the basic-row reading, and the
+motivation---making Algorithm~H slow---supports the operational one;
+the abstract of Knuth's 2022 lecture on Tchoukaillon numbers
+\cite{KnuthRutgers} poses the matching question in terms of running
+time. These notes do not choose. They answer the literal question
+completely (Section~\ref{sec:literal}), and report partial results on the
+other two (Section~\ref{sec:operational}).
+
+Finally there is the question raised in the answer to exercise~16:
+whether some graph forces \emph{more} rounds than a Tchoukaillon graph
+would, ``by violating assumption~(a) and/or by finding more SAPs.'' Here
+no condition is imposed on the run at all. Let
+\[
+  R(s)=\max\ \{\,\text{number of rounds of Algorithm~H}\,\},
+\]
+the maximum over all ordered bipartite graphs whose maximum matching has
+size~$s$. (Neither a perfect matching nor any particular initial
+matching is required.) Sections~\ref{sec:upper}--\ref{sec:comparison}
+determine $R(s)$ exactly. Table~\ref{tab:readings} summarizes the
+four questions and what these notes establish about them.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{.2\textwidth}
+  >{\raggedright\arraybackslash}p{.34\textwidth}
+  >{\raggedright\arraybackslash}p{.36\textwidth}}
+\toprule
+Question & Requirement & Answer here\\
+\midrule
+Literal & schedule, and $\Up$ in every round & for $s\ge1$, exists
+  exactly when $s\in\{1,2,3,4,5,8,9\}$ (Corollary~L)\\[3pt]
+Basic-row & schedule, and $\Bp$ in every round & explicit inputs for all
+  $s\le41$ (Appendix~\ref{app:catalog}), including Knuth's graph; open in
+  general\\[3pt]
+Operational & schedule only & the same inputs; open in general; necessary
+  conditions in Section~\ref{sec:operational}\\[3pt]
+Most rounds & nothing & $R(s)=\floor{\sqrt{4s+1}}-1$ (Theorem~R);
+  always $R(s)\ge T(s)$, with strict inequality first at $s=9$ and for
+  all large $s$ (Section~\ref{sec:comparison})\\
+\bottomrule
+\end{tabular}
+\caption{Four questions suggested by exercises~15 and 16.}
+\label{tab:readings}
+\end{table}

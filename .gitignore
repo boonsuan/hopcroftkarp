@@ -1,0 +1,22 @@
+# Node / Vite
+node_modules/
+site/dist/
+
+# Python
+__pycache__/
+*.pyc
+
+# LaTeX build files (the PDF itself is committed)
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/*.synctex.gz
+report/*.fls
+report/*.fdb_latexmk
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

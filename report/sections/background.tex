@@ -1,0 +1,309 @@
+\section{Algorithm H in brief}
+\label{sec:background}
+
+This section recalls the parts of Section~7.5.1 that matter for worst
+cases. Readers who know pages~1--5 of the pre-fascicle well can skim it,
+but should look at two things: the definition of an \emph{input} in
+Section~\ref{sec:input}, which fixes exactly what freedom a worst-case
+construction has, and the worked round in Section~\ref{sec:worked}.
+
+\subsection{Matchings and augmenting paths}
+
+A bipartite graph has $M$ \emph{girls} and $N$ \emph{boys}, joined by $E$
+edges; each edge joins a girl to a boy. A \emph{matching} is a set of
+edges with no common vertex. Its edges are called \emph{couples}, and a
+vertex that belongs to no couple is \emph{free}. A matching is
+\emph{maximal} if no edge can be added to it, and \emph{maximum} if no
+matching has more edges. Throughout, $s$ denotes the size of a maximum
+matching. We often write $V=M+N$ for the number of vertices.
+
+We follow the pre-fascicle's drawing conventions. When two matchings are
+compared, an edge of the reference matching is written $x\sg y$ and an
+edge of the current matching $M'$ is written $x\db y$. In particular an
+\emph{augmenting path} for $M'$ is a path
+\begin{equation}
+  g_0\sg b_1\db g_1\sg b_2\db\cdots\db g_{L-1}\sg b_L
+  \label{eq:augpath}
+\end{equation}
+that starts at a free girl, ends at a free boy, and alternates between
+edges outside and inside $M'$. It has $2L-1$ edges, and we say it has
+\emph{level}~$L$. Exchanging the two kinds of edges along the path
+(Fig.~\ref{fig:augpath}) produces a matching with one more couple.
+In~\eqref{eq:augpath} no reference matching is involved, and the single
+lines mean ``an edge not in~$M'$.'' We describe augmenting paths by
+their level; when the number of edges matters we say so. An edge named
+without regard to any matching is written by juxtaposition, as in
+$g_1b_6$.
+
+\begin{figure}[ht]
+\centering
+\input{figures/augpath}
+\caption{An augmenting path of level~$L=3$, and the matching after
+augmenting along it. Double lines are couples; heavy outlines mark free
+vertices. In all figures girls are drawn as circles and boys as squares.}
+\label{fig:augpath}
+\end{figure}
+
+Berge's observation~\cite{Berge} (pre-fascicle, page~1) is that if $M'$ has
+$s'$ couples, then the union of $M'$ with a maximum matching contains at
+least $s-s'$ \emph{vertex-disjoint} augmenting paths for $M'$. We shall
+use this mostly when $s=M=N$, so that there is a \emph{perfect}
+matching~$P$. Then the symmetric difference $M'\symdiff P$ consists of
+exactly $f$ vertex-disjoint augmenting paths, where $f=M-s'$ is the number
+of free girls, together with some alternating cycles. Following answer
+15(a), we call these $f$ paths the \emph{basic paths} of $M'$ with
+respect to~$P$. A basic path of level~$\ell$ contains exactly $\ell$ edges
+of~$P$, and like Knuth in answer~15(d) we often draw it as a \emph{row} of
+$\ell$ cells, one for each girl--boy pair of~$P$ that it visits. (Later
+sections call these rows the rows of a matrix, or hooks; they are always
+basic paths.)
+
+\subsection{Shortest augmenting paths and rounds}
+\label{sec:dag}
+
+A \emph{shortest augmenting path}, or SAP, is an augmenting path of
+smallest level. To find them, orient every edge relative to the current
+matching: an edge outside the matching points from its girl to its boy,
+and a couple points from its boy to its girl. Alternating paths that start
+at a free girl are then exactly the directed paths that start there. The
+\emph{distance} of a vertex is the number of edges on a shortest such
+directed path from some free girl to it.
+
+Hopcroft and Karp~\cite{HK} organize all SAPs into a directed acyclic
+graph, built breadth-first from the free girls (page~2 of the
+pre-fascicle). The dag has \emph{levels} $G_0,B_1,G_1,\ldots,
+G_{L-1},B_L$: $G_0$ is the set of free girls; $B_k$ consists of the
+boys first reached from girls in $G_{k-1}$; and $G_k$ consists of the
+mates of the boys in $B_k$. So $G_k$ and $B_k$ are the girls at distance
+$2k$ and the boys at distance $2k-1$. There is an arc $b\to g$ for each edge
+$g\sg b$ with $g\in G_{k-1}$, $b\in B_k$, and an arc from each girl to
+her mate. The construction stops at the first level~$B_L$ that contains
+a free boy. Knuth adds two special nodes: arcs $g\to\bot$ from the free
+girls and $\top\to b$ to the free boys of~$B_L$. The SAPs are then
+exactly the paths from $\top$ to $\bot$, read backwards; this is why the
+arcs in the pre-fascicle's figure~(7) point to the left.
+
+Each \emph{round} of Algorithm~H builds this dag (steps~\Hs2--\Hs{10})
+and then dismantles it (steps~\Hs{11}--\Hs{17}): it repeatedly finds a
+path from $\top$ to $\bot$ by depth-first search, augments the matching
+along it, and deletes its vertices from the dag. When no path remains,
+the paths removed form a \emph{maximal} set of vertex-disjoint SAPs:
+no further SAP is disjoint from all of them. This set need not be as
+large as possible, and the gap between ``maximal'' and ``maximum'' is
+what a worst-case input exploits.
+
+After a round at level~$L$, every augmenting path has level greater
+than~$L$; this is exercise~5, and goes back to Hopcroft and Karp
+\cite[Theorem~2 and Corollaries~3--4]{HK}. So the levels of successive rounds strictly
+increase. Theorem~H turns this into a
+counting bound: when a round at level~$L$ is over, every one of the
+$s-s'$ disjoint augmenting paths has at least $L+1$ edges of a maximum
+matching, so $s\ge(L+1)(s-s')$. Corollary~K deduces that there are at
+most about $2\sqrt s$ rounds, each costing $O(M+N+E)$.
+
+\subsection{What an input is}
+\label{sec:input}
+
+Algorithm~H is deterministic. To speak of a graph that ``might cause''
+it to behave badly, as exercise~15(c) does, we must say exactly which
+features of the input it reads. There are two:
+\begin{enumerate}[label=(\roman*)]
+\item the numbering of the girls~$1,\ldots,M$, which fixes the order in
+  which step~\Hs1 scans them;
+\item for each girl~$g$, the order of her list of boys, which starts at
+  $\A{GLINK}[g]$ and continues through $\A{GNEXT}$.
+\end{enumerate}
+We call a bipartite graph together with these data an \emph{ordered
+graph}. By exercise~6, any desired list order arises from a suitable
+order of the input pairs, since each new edge is inserted at the front
+of its girl's list. Nothing else matters. The numbering of the boys is
+irrelevant, since no step compares boy indices. There is also \emph{no}
+boy-side order to choose: the reverse lists $\A{BLINK}[b]$ are built by
+the algorithm itself.
+
+For orientation, here is what the steps do, in our words (the precise
+code is on pages~4--5 of the pre-fascicle).
+\begin{center}\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.17\textwidth}>{\raggedright\arraybackslash}p{.76\textwidth}@{}}
+\toprule
+\Hs1&Greedy start: a maximal matching; the free girls go into \A{QUEUE}.\\
+\Hs2--\Hs3&Start a dag; start the next level.\\
+\Hs4--\Hs7&Take the next girl of the current level and scan her list of boys.\\
+\Hs8--\Hs9&A boy seen for the first time joins the next level; his mate is
+  queued for the level after, or, if he is free, the final level~$L$ is
+  fixed and he is recorded as a root.\\
+\Hs{10}&Go on to the next level, or finish the dag (or stop if no free boy was reached).\\
+\Hs{11}&Take the next root; if none is left, reset all marks and start a new round.\\
+\Hs{12}--\Hs{15}&Depth-first search from the root down the reverse lists
+  \A{BLINK}, consuming each arc it follows and skipping used girls;
+  back up when a list runs out.\\
+\Hs{16}--\Hs{17}&A free girl was reached: remove her from the free list and
+  augment along the path.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The following consequences of the code will be used repeatedly.
+
+\begin{itemize}
+\item \textbf{\Hs1 scans the girls in decreasing order.} Answer~7 matches
+  girl~$g$ to the first free boy on her list, for $g=M,M-1,\ldots,1$,
+  and appends each unsuccessful girl to \A{QUEUE}. So the free girls
+  start out in \A{QUEUE} in decreasing numerical order. The resulting
+  matching is maximal, so the first dag has $L\ge2$.
+\item \textbf{The dag levels are scanned in queue order.} Girls of $G_l$
+  are processed in their order in \A{QUEUE}; each scans her own list in
+  order. A boy enters $B_{l+1}$ when he is first seen (step~\Hs8), and
+  his mate is appended to \A{QUEUE} as a girl of $G_{l+1}$ (step
+  \Hs9). So the order of $G_{l+1}$ is the order in which the boys of
+  $B_{l+1}$ were discovered.
+\item \textbf{Reverse lists are built by insertion at the head.} The
+  first girl who sees $b$ becomes the only entry of $\A{BLINK}[b]$
+  (step~\Hs8); every later girl of the same level who is adjacent to $b$
+  is inserted at the \emph{front} (step~\Hs6). Hence $\A{BLINK}[b]$ lists
+  the girls of $G_l$ adjacent to $b$ in the \emph{reverse} of their order
+  in \A{QUEUE}.
+\item \textbf{The last level is cut short.} When the first free boy is
+  found, $L$ is set to the current level and the queue of the next
+  level is discarded. After that, matched boys are no longer entered
+  (step~\Hs8), but free boys still are. The free boys of $B_L$ are the
+  last $r$ entries of \A{MARKED}, in order of discovery, and step~\Hs{11}
+  uses them as roots of the depth-first search in that order.
+\item \textbf{The depth-first search destroys what it reads.} Step~\Hs{13}
+  removes each arc from $\A{BLINK}[b]$ as it follows it, and skips a
+  girl if she has already been used by an earlier SAP of this round
+  (she is ``deleted''). If a list becomes empty, step~\Hs{15} backs up
+  one level; nothing is ever re-examined. Reaching a free girl completes
+  a SAP.
+\item \textbf{A used free girl is replaced by the last one.} Step~\Hs{16}
+  removes the girl~$g_0$ of a new SAP from the free list by moving the
+  last free girl, $\A{QUEUE}[f-1]$, into her slot. So the order of the
+  free girls is preserved only if each SAP ends at the last of them.
+\end{itemize}
+
+\subsection{A worked round}
+\label{sec:worked}
+
+The ordered graph of Fig.~\ref{fig:gamma5} has nine girls and nine
+boys. Its girl lists, in increasing order of girls, are
+\begin{equation}
+  [6,8];\ [4,6];\ [1,4];\ [1];\ [1,2];\ [2,3];\ [4,2,5];\ [6,5,7];\ [8,9].
+  \label{eq:gamma5lists}
+\end{equation}
+(Girl~1 is adjacent to boys~6 and~8, in that order, and so on.)
+Its vertices are arranged in nine \emph{cells}: cell~$(a,c)$, in row~$a$
+and column~$c$, holds one girl and one boy, joined by an edge (the short
+dark edge inside the cell). These nine edges form a perfect matching, so
+$s=9$. The other edges join the boy of a cell either to the girl of the
+next cell in the same row or to the girl of the cell below; in the
+drawing they run diagonally, up-right and down-left respectively. We
+shall meet this graph again in Section~\ref{sec:staircase} as the
+staircase graph~$\Gam_5$.
+
+\begin{figure}[ht]
+\centering
+\input{figures/gen_gamma5}
+\caption{The 9-pair example, with the matching produced by~\Hs1. The
+grey label $(a,c)$ names the cell of the girl beside it and of the boy
+below her; the dark edge joining them belongs to a perfect matching.
+Light grey lines are the other edges of the graph, double lines are
+couples, and free vertices have heavy outlines. The dotted segment
+marks an edge deliberately left out of the graph
+(Section~\ref{sec:gamma}).}
+\label{fig:gamma5}
+\end{figure}
+
+\paragraph{Step H1.}
+Girls~$9,8,7,6,5$ come first. Each takes the first boy on her list,
+namely $8,6,4,2,1$, and these are all different. Girls~$4,3,2,1$ then
+find every boy on their lists taken. So~\Hs1 produces the five couples
+drawn as double lines in Fig.~\ref{fig:gamma5}, and
+\[
+   \A{QUEUE}=(4,3,2,1),\qquad f=4 .
+\]
+In the picture, the free girls are the first girls of the four rows,
+and the free boys are the last boys of the rows.
+
+\paragraph{Building the dag.}
+Fig.~\ref{fig:gamma5dag} shows the dag of the first round. Girl~4 scans
+her list $[1]$ and discovers boy~1. Girl~3 scans $[1,4]$: boy~1 has
+already been seen at this level, so girl~3 is inserted at the head of
+$\A{BLINK}[1]$, giving $\A{BLINK}[1]=(3,4)$; then she discovers boy~4.
+Girls~2 and~1 behave the same way, so $B_1=\{1,4,6,8\}$ in that order,
+and their mates $5,7,8,9$ form $G_1$. At the next level boy~2 is
+discovered first; he is matched (to girl~6), so the construction goes
+on. Then girl~7 discovers boy~5, who is free: now $L=2$. Boys~7 and~9
+are free too, so the roots of the search will be $5,7,9$, in that
+order.
+
+\begin{figure}[ht]
+\centering
+\input{figures/gen_gamma5_dag}
+\caption{The first dag for the graph of Fig.~\ref{fig:gamma5}, drawn as
+in the pre-fascicle's figure~(7). When a boy has two arcs, the small
+numbers give their order in $\A{BLINK}$; the girl who discovered him
+comes \emph{second}. The shaded path is the only SAP that Algorithm~H
+finds. Boy~2 belongs to $B_2$ but is matched, so his mate (faded) is
+not part of the dag.}
+\label{fig:gamma5dag}
+\end{figure}
+
+\paragraph{Dismantling the dag.}
+The search starts at boy~5. The head of his list is girl~8, whose mate
+is boy~6; the head of $\A{BLINK}[6]$ is girl~1, who is free. That
+completes the SAP
+\[
+    g_1\sg b_6\db g_8\sg b_5 ,
+\]
+and Algorithm~H augments along it. The next root, boy~7, has only
+girl~8 on his list, and she has just been used. The last root, boy~9,
+leads to girl~9 and then to boy~8, whose only remaining entry is
+girl~1, also used. So the round ends with a \emph{single} SAP, even
+though the four rows of Fig.~\ref{fig:gamma5} contain three disjoint
+SAPs (rows~2, 3, and~4). The one path that was found meets all three
+of them. Step~\Hs{16} removed girl~1, the last free girl, so the queue
+for the next round is $(4,3,2)$.
+
+The remaining rounds behave similarly: each finds one SAP, at levels
+$3$, $4$, and $5$, so the whole run has five rounds counting~\Hs1.
+Fig.~\ref{fig:gamma5rounds} on page~\pageref{fig:gamma5rounds} shows
+all of them. A Tchoukaillon graph with $s=9$ would need only four.
+
+\subsection{Counting rounds and operations}
+\label{sec:counting}
+
+Answer~15(c) gives the number of rounds of a Tchoukaillon graph as
+``the final value of~$L$.'' In such a graph the dags have levels
+$2,3,\ldots,L$, so this count treats step~\Hs1 as a round at level~1;
+answer~7 makes the same identification when it notes that, if~\Hs1 did
+not produce a maximal matching, the first round would do so with $L=1$.
+We adopt this convention.
+
+\begin{definition}
+A round is \emph{successful} if it enlarges the matching. The
+\emph{number of rounds} of a run of Algorithm~H is the number of
+successful rounds, where step~\Hs1 counts as one round (successful
+whenever the graph has an edge). The final dag construction, which
+finds no augmenting path and stops the algorithm, is not counted.
+\end{definition}
+
+Thus a run on a graph with $s\ge1$ has $1+k$ rounds if $k$ dags contain
+augmenting paths. If the levels of those dags are $2,3,\ldots,n$ then
+there are exactly $n$ rounds. The run of Section~\ref{sec:worked} has
+five.
+
+For running times we count elementary operations of Algorithm~H rather
+than seconds. In each successful round we record three counts, named
+after the steps that perform them:
+\begin{align*}
+  W_5&=\text{number of adjacency entries examined in step~\Hs5 (the breadth-first search)},\\
+  W_{13}&=\text{number of arcs consumed in step~\Hs{13} (the depth-first search)},\\
+  W_{11}&=\text{number of marks reset in step~\Hs{11}, which equals the number of boys in the dag.}
+\end{align*}
+$W_{13}$ includes arcs that lead to deleted girls. Every other step of a
+round costs $O(1)$ per unit of one of these counts, plus $O(f)$, so the
+total work in rounds after~\Hs1 is $\Theta(W_5+W_{13}+W_{11})$ up to that
+small additive term. For example, the round of Section~\ref{sec:worked}
+has $W_5=17$ (girls~$4,3,2,1,5,7,8,9$ have lists of total length~17),
+$W_{11}=8$ (the boys of $B_1$ and $B_2$), and $W_{13}=5$ (two arcs for the
+successful root, one for boy~7, and two for boy~9).

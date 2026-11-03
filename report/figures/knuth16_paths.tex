@@ -1,0 +1,22 @@
+\begin{tikzpicture}[x=1.25cm,y=.9cm]
+\node[girl,free] (g7) at (0,0) {$g_7$};
+\node[boy] (b7) at (1,0) {$b_7$};
+\node[girl] (g8) at (2,0) {$g_8$};
+\node[boy,free] (b8) at (3,.75) {$b_8$};
+\node[boy] (b5) at (3,-.75) {$b_5$};
+\node[girl] (g6) at (4,-.75) {$g_6$};
+\node[boy,free] (b4) at (5,-.75) {$b_4$};
+\begin{scope}[on background layer]
+\draw[sap] (g7.center)--(b7.center)--(g8.center)--(b8.center);
+\draw[draw=boydraw,line width=6.5pt,line cap=round,line join=round,opacity=.22]
+   (g7.center)--(b7.center)--(g8.center)--(b5.center)--(g6.center)--(b4.center);
+\end{scope}
+\draw[pedge] (g7)--(b7);
+\draw[couple] (b7)--(g8);
+\draw[pedge] (g8)--(b8);
+\draw[edge,line width=.75pt,draw=black!60] (g8)--(b5);
+\draw[couple] (b5)--(g6);
+\draw[edge,line width=.75pt,draw=black!60] (g6)--(b4);
+\node[font=\small,anchor=west] at (3.35,.75) {$\pi_2$: level 2};
+\node[font=\small,anchor=west] at (5.35,-.75) {$\pi_3$: level 3};
+\end{tikzpicture}

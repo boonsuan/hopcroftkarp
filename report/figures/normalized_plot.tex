@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\begin{axis}[
+  width=.82\linewidth, height=5.0cm,
+  xmin=1, xmax=400, ymin=0.9, ymax=2.75,
+  xlabel={$s$}, ylabel={rounds$/\sqrt s$},
+  axis lines=left, tick label style={font=\scriptsize}, label style={font=\small},
+  ytick={1,1.5,1.7725,2,2.5}, yticklabels={$1$,$1.5$,$\sqrt\pi$,$2$,$2.5$},
+  legend style={draw=none,fill=white,fill opacity=.85,text opacity=1,
+    at={(0.98,0.97)},anchor=north east,font=\scriptsize,cells={anchor=west}},
+  ymajorgrids, grid style={black!8}]
+\addplot[qcol,line width=.7pt,mark=none] table[x=s,y=Rn]{figures/gen_rounds.dat};
+\addlegendentry{$R(s)/\sqrt s$}
+\addplot[chcol,line width=.7pt,mark=none] table[x=s,y=Tn]{figures/gen_rounds.dat};
+\addlegendentry{$T(s)/\sqrt s$}
+\addplot[black!45,dashed,domain=1:400] {2};
+\addplot[black!45,dashed,domain=1:400] {1.7724539};
+\end{axis}
+\end{tikzpicture}

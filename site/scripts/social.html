@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'LD'; src: url('../src/fonts/LibertinusSerifDisplay-Regular.woff2'); }
+  @font-face { font-family: 'LS'; src: url('../src/fonts/LibertinusSerif-Regular.woff2'); }
+  @font-face { font-family: 'LSI'; src: url('../src/fonts/LibertinusSerif-Italic.woff2'); }
+  @font-face { font-family: 'LSans'; src: url('../src/fonts/LibertinusSans-Regular.woff2'); }
+  html, body { margin: 0; }
+  .card {
+    width: 1200px; height: 630px; box-sizing: border-box; position: relative; overflow: hidden;
+    background: #fbfaf7; color: #1e1e1e; padding: 70px 76px; font-family: 'LS', serif;
+  }
+  .card::after { content: ''; position: absolute; inset: 22px; border: 1.5px solid #e2dfd6; border-radius: 22px; pointer-events: none; }
+  h1 { font-family: 'LD', serif; font-weight: 400; font-size: 76px; line-height: 1.04; margin: 0 0 22px; max-width: 640px; letter-spacing: -0.01em; }
+  .sub { font-size: 34px; color: #4a4d52; margin: 0 0 40px; max-width: 620px; font-family: 'LSI', serif; }
+  .meta { position: absolute; left: 76px; bottom: 64px; font-family: 'LSans', sans-serif; font-size: 24px; color: #7a7f86; }
+  .meta b { color: #1e1e1e; font-weight: 400; }
+  .art { position: absolute; right: 70px; top: 70px; width: 380px; height: 490px; }
+  .art img { width: 100%; height: 100%; object-fit: contain; object-position: right center; }
+  .nb { white-space: nowrap; }
+</style>
+</head>
+<body>
+  <div class="card" id="card">
+    <h1>How slow can Algorithm 7.5.1H be?</h1>
+    <p class="sub">Rounds, staircases, and Tchoukaillon graphs. An interactive companion to Knuth’s <span class="nb">Pre-Fascicle 14A</span>.</p>
+    <div class="meta"><b>hopcroftkarp.site</b> &nbsp;·&nbsp; ho boon suan, with Claude Opus 5.5</div>
+    <div class="art"><img src="ART" alt=""></div>
+  </div>
+</body>
+</html>

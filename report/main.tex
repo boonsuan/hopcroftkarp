@@ -1,0 +1,109 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T2A,T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{libertinus}
+\usepackage[varqu,varl,scale=0.88]{inconsolata}
+\usepackage{amsmath,amsthm,mathtools}
+\usepackage[a4paper,margin=28mm,headheight=14pt]{geometry}
+\usepackage{microtype,booktabs,array,enumitem,longtable}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx,caption,subcaption,fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows.meta,calc,positioning,backgrounds,decorations.pathreplacing,shapes.misc,fit}
+\usepackage[colorlinks=true,linkcolor=linkblue,citecolor=linkblue,urlcolor=linkblue]{hyperref}
+\usepackage{xurl}
+\urlstyle{same}
+
+\input{macros}
+
+\hypersetup{pdftitle={How slow can Algorithm 7.5.1H be?},pdfauthor={Claude Opus 5.5},
+  pdfsubject={Rounds of the Hopcroft-Karp algorithm, staircase graphs, and Tchoukaillon graphs}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape How slow can Algorithm 7.5.1H be?}
+\fancyhead[R]{\small\itshape\nouppercase{\leftmark}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\sectionmark}[1]{\markboth{\thesection.\ #1}{}}
+\setlength{\parskip}{2.5pt plus 1pt}
+\setlength{\emergencystretch}{2em}
+\setlist{itemsep=2pt,topsep=4pt}
+\captionsetup{font=small,labelfont=bf,labelsep=period,margin=6mm}
+\numberwithin{equation}{section}
+\setcounter{tocdepth}{2}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{30mm}
+{\fontsize{26}{30}\selectfont How slow can Algorithm 7.5.1H be?\par}
+\vspace{6mm}
+{\Large Rounds, staircases, and Tchoukaillon graphs\par}
+\vspace{10mm}
+{\large Notes on exercises~15 and 16 of\\[2pt]
+\emph{The Art of Computer Programming}, Pre-Fascicle~14A,\\[2pt]
+Section~7.5.1: Bipartite Matching\par}
+\vspace{14mm}
+\input{figures/title}
+\vfill
+{\large Claude Opus 5.5\par}
+\vspace{4mm}
+{\small 3 November 2026\\[2pt]
+References are to the pre-fascicle of 18 September 2026 (zeroth printing, revision~$-88$)\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+\begin{abstract}
+\noindent
+Knuth's Algorithm~7.5.1H (Algorithm~H for short), his implementation of
+the Hopcroft--Karp algorithm, works in \emph{rounds}: each round builds a dag of shortest augmenting
+paths and then removes a maximal set of disjoint ones. Exercise~15 of
+Pre-Fascicle~14A asks how badly this can go, and proposes a candidate
+worst case, the \emph{Tchoukaillon graph}, whose number of rounds is
+governed by the Tchoukaillon numbers $\Ch_n\approx n^2/\pi$. These notes
+answer the unrestricted version of the question, which the answer to
+exercise~16 poses as harder. A graph whose maximum matching has
+size~$s$ can force at most $\lfloor\sqrt{4s+1}\rfloor-1$ rounds, and this
+is attained for every~$s$ by explicit \emph{staircase graphs}: planar
+graphs of maximum degree three, with input orders under which we can
+prove exactly what Algorithm~H does. Equivalently, $n$ rounds are possible
+exactly when $s\ge\lfloor(n+1)^2/4\rfloor$. The smallest size at
+which this beats a Tchoukaillon graph is $s=9$, and the advantage grows
+like $(2-\sqrt\pi)\sqrt s$. On the same graphs Algorithm~H performs
+$\Theta(E\sqrt V)$ operations. We also show that the literal definition
+in exercise~15 can be met only when $s\in\{1,2,3,4,5,8,9\}$; Knuth's own
+16-pair example meets a weaker condition, which we make precise. Whether
+that weaker condition can be met for every $s$ is still open, and we
+collect what is known about it.
+\end{abstract}
+
+\vspace{4mm}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\input{sections/overview}
+\input{sections/background}
+\input{sections/exercise15}
+\input{sections/upper}
+\input{sections/staircase}
+\input{sections/comparison}
+\input{sections/literal}
+\input{sections/operational}
+\input{sections/sparse}
+\input{sections/credits}
+
+\appendix
+\input{sections/app_knuth16}
+\input{sections/app_halving}
+\input{sections/app_catalog}
+\input{sections/app_code}
+
+\input{sections/bibliography}
+
+\end{document}

@@ -1,0 +1,123 @@
+\section{Overview}
+\label{sec:overview}
+
+Algorithm~7.5.1H, in Knuth's Pre-Fascicle~14A~\cite{Knuth}, is his
+implementation of the Hopcroft--Karp algorithm~\cite{HK}. Inside
+Section~7.5.1 Knuth calls it simply Algorithm~H, and so shall we. After a
+greedy start (step~\Hs1)
+it repeats a \emph{round}: build a dag that contains every shortest
+augmenting path, then dismantle the dag, augmenting along a maximal
+collection of vertex-disjoint shortest paths. Corollary~K bounds the
+number of rounds by about $2\sqrt s$, where $s$ is the size of a maximum
+matching, so the running time is $O\bigl((M+N+E)\sqrt s\,\bigr)$.
+
+Is that square root ever needed? Knuth remarks on page~5 that graphs
+needing anywhere near $\sqrt s$ rounds are hard to find, and that even
+for such a graph ``its edges have to appear in a particularly perverse
+order.''
+Exercise~15 proposes a candidate: a \emph{Tchoukaillon graph}, on which
+each round removes as few shortest paths as a simple counting argument
+allows. The resulting round count is governed by the Tchoukaillon
+numbers $\Ch_n$ of exercise~11, and since $\Ch_n\approx n^2/\pi$, such a
+graph would force about $\sqrt{\pi s}$ rounds. Exercise~16 asks whether
+Tchoukaillon graphs exist for every~$s$, and its answer raises an even
+harder question: can some graph force \emph{more} rounds than a
+Tchoukaillon graph would? Fig.~\ref{fig:rounds} shows the answer.
+
+\begin{figure}[ht]
+\centering
+\input{figures/rounds_plot}
+\caption{The largest possible number of rounds~$R(s)$ (blue), against
+the number of rounds~$T(s)$ that a Tchoukaillon graph would need (red),
+for matching sizes~$s\le64$. Shaded columns mark the sizes where
+$R(s)>T(s)$; the first is $s=9$. The two staircases step up at the
+quarter-squares $Q_n$ and at the Tchoukaillon numbers $\Ch_n$
+(both defined below).}
+\label{fig:rounds}
+\end{figure}
+
+\subsection*{The answers in brief}
+
+\begin{summarybox}
+\begin{enumerate}[leftmargin=1.4em,label=\textbf{\arabic*.}]
+\item \textbf{The maximum number of rounds.} Count~\Hs1 as the first
+round, as answer~15(c) does. A bipartite graph whose maximum matching
+has $s$ edges can make Algorithm~H perform at most
+\[
+   R(s)=\bigfloor{\sqrt{4s+1}}-1
+\]
+rounds, whatever the order of its input, and for every $s$ some graph
+and input order attain this bound (Theorem~R). Put differently,
+$n$ rounds are possible exactly when
+\[
+   s\ \ge\ Q_n=\bigfloor{\frac{(n+1)^2}4}\qquad(\text{the quarter-squares }1,2,4,6,9,12,16,20,\ldots),
+\]
+while a hypothetical Tchoukaillon graph has at least $n$ rounds exactly
+when $s\ge\Ch_n$ $(1,2,4,6,10,12,18,22,\ldots)$.
+\item \textbf{Staircase graphs.} The extremal graphs are explicit, planar,
+and have maximum degree three. Their input orders make Algorithm~H
+find exactly one shortest augmenting path per round, at levels
+$L=2,3,\ldots,n$, and we can prove every step of the execution
+(Theorem~S). Algorithm~H performs $\Theta(E\sqrt V)$ elementary operations
+on them (Theorem~W), so Corollary~K is tight even for sparse planar graphs.
+\item \textbf{Beating Tchoukaillon.} Always $Q_n\le\Ch_n$, so the true
+worst case is always at least as slow as a Tchoukaillon graph would be.
+The first size where it is strictly slower is $s=9$: five rounds are
+possible, against four. Asymptotically $R(s)-T(s)\sim(2-\sqrt\pi)\sqrt s$
+(Section~\ref{sec:comparison}).
+\item \textbf{The literal definition.} Exercise~15(c) asks that
+\emph{every} augmenting path have the current shortest level at every
+round. Graphs meeting that requirement exist only when
+$s\in\{1,2,3,4,5,8,9\}$ (Corollary~L), because consecutive rounds of this
+kind must at least halve the number of free girls (Theorem~U). Knuth's
+16-pair example in answer~15(d) has augmenting paths of levels~2 and~3
+immediately after~\Hs1, yet with suitable input orders it does follow
+the Tchoukaillon schedule.
+\item \textbf{The open question.} Can the Tchoukaillon \emph{schedule} (the
+numbers of free girls and of paths removed, round by round) be realized
+for every $s$? Explicit inputs exist for all $s\le41$, and they even keep
+$f$ disjoint SAPs in every round, as Knuth's matrices do. Any family of
+inputs that realizes the schedule for unboundedly large $s$ must contain
+at least $s/12-O(1)$ independent cycles (Theorem~C). Some candidate graphs
+fail only because of the order in which Algorithm~H searches: its queue,
+the head insertion of step~\Hs6, and the replacement rule of step~\Hs{16}
+(Section~\ref{sec:order}).
+\end{enumerate}
+\end{summarybox}
+
+\subsection*{How these notes are organized}
+
+Section~\ref{sec:background} recalls just enough of Algorithm~H to make
+precise what an ``input'' is and which choices it leaves open; it
+also works through one round of an example that recurs throughout.
+Section~\ref{sec:ex15} restates exercise~15, explains where the
+Tchoukaillon numbers come from, and separates three ways of reading the
+definition of a Tchoukaillon graph. Sections~\ref{sec:upper}
+and~\ref{sec:staircase} prove Theorem~R: first the upper bound, which is
+a sharpened form of the counting in Theorem~H, then the staircase
+construction. Section~\ref{sec:comparison} compares the answer with the
+Tchoukaillon numbers. Section~\ref{sec:literal} settles the literal
+reading of exercise~15, and Section~\ref{sec:operational} collects what
+we know about the open, numerical reading. Section~\ref{sec:sparse}
+gives simpler examples for the running-time question alone.
+Section~\ref{sec:credits} discusses the literature.
+
+The appendices give a complete ordered input for Knuth's 16-pair graph,
+details of a family that meets the literal definition, a catalog of
+computed examples, and a guide to the accompanying programs.
+
+\paragraph{Which draft.} Page, exercise, step, and equation numbers refer
+to the zeroth printing of Pre-Fascicle~14A, revision~$-88$, dated
+18~September 2026. A pre-fascicle is a working draft, so these numbers may
+change in later revisions.
+
+\subsection*{What is classical and what is new}
+
+The tools are the ones in the pre-fascicle: Berge's augmenting paths
+\cite{Berge}, the layered dag and the fact that the shortest level
+increases from round to round~\cite{HK}, and the counting argument
+behind Theorem~H. The upper bound in Theorem~R refines Hopcroft and Karp's
+bound on the number of phases. As far as we know, the staircase graphs,
+the exact value of $R(s)$, and the results of Sections~\ref{sec:literal}
+and~\ref{sec:operational}, are new; Section~\ref{sec:credits} discusses
+the literature.

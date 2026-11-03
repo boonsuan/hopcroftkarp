@@ -1,0 +1,105 @@
+\section{The true maximum against the Tchoukaillon schedule}
+\label{sec:comparison}
+
+We now have two staircases of thresholds (Fig.~\ref{fig:rounds}): $n$
+rounds are possible for some graph exactly when $s\ge Q_n$, and a
+Tchoukaillon graph, if one exists, has $n$ rounds exactly when
+$\Ch_n\le s<\Ch_{n+1}$:
+\begin{center}\small
+\setlength{\tabcolsep}{4.2pt}
+\begin{tabular}{c|cccccccccccccc}
+ $n$&1&2&3&4&5&6&7&8&9&10&11&12&13&14\\\hline
+ $Q_n$&1&2&4&6&\textbf{9}&12&\textbf{16}&\textbf{20}&\textbf{25}&\textbf{30}&\textbf{36}&\textbf{42}&\textbf{49}&\textbf{56}\\
+ $\Ch_n$&1&2&4&6&10&12&18&22&30&34&42&48&58&60
+\end{tabular}
+\end{center}
+(Bold entries are those with $Q_n<\Ch_n$.)
+
+\subsection{Always $T(s)\le R(s)$}
+
+\begin{lemma}
+\label{lem:chq}
+$Q_n\le\Ch_n$ for all $n\ge1$. Consequently $T(s)\le R(s)$ for all $s$.
+\end{lemma}
+
+\begin{proof}
+Run the schedule~\eqref{eq:schedule} with $s=\Ch_n$, so that it has $n$
+rounds and $f_L>0$ for $2\le L\le n$. By induction $f_L\le s/L$: indeed
+$f_2=\floor{s/2}$, and $f_{L+1}=\floor{Lf_L/(L+1)}\le s/(L+1)$. On the other
+hand each of the levels~$L,L+1,\ldots,n$ removes at least one free girl,
+so $f_L\ge n+1-L$. Hence $s\ge L(n+1-L)$ for $2\le L\le n$, and choosing
+$L=\ceil{(n+1)/2}$ gives $s\ge Q_n$ when $n\ge3$; the cases~$n\le2$ are
+in the table. Since $T(s)=n$ means $s\ge\Ch_n\ge Q_n$, Theorem~R gives
+$R(s)\ge n$.
+\end{proof}
+
+This is the argument of Section~\ref{sec:upper} applied to the numbers
+alone; it does not assume that any Tchoukaillon graph exists.
+
+\subsection{Where the true maximum is larger}
+
+By Lemma~\ref{lem:chq}, $R(s)>T(s)$ exactly when $Q_n\le s<\Ch_n$ for
+$n=R(s)$, and $R(s)=T(s)$ exactly when $\Ch_n\le s<Q_{n+1}$ for some $n$.
+The second interval is nonempty only when $\Ch_n<Q_{n+1}$. Computing
+$\Ch_n$ for all $n\le10^5$ by the formula of exercise~11(c), we find that
+this happens only for $n\le8$ and $n=10,12,14$. Hence:
+\begin{itemize}
+\item $R(s)=T(s)$ for $s\le8$ and for
+  $s\in\{10,\ldots,15,\,18,19,\,22,23,24,\,34,35,\,48,\,60,\ldots,63\}$;
+\item $R(s)>T(s)$ for every other $s$ with $9\le s<\Ch_{100001}\approx3.2\times10^9$,
+  and for all sufficiently large $s$.
+\end{itemize}
+The last statement follows from the asymptotic formulas: $R(s)=2\sqrt
+s+O(1)$, while exercise~11(d) gives $T(s)=\sqrt{\pi s}+O(s^{1/6})$, so
+\[
+   R(s)-T(s)=(2-\sqrt\pi)\sqrt s+O(s^{1/6}),\qquad
+   \frac{R(s)}{T(s)}\to\frac2{\sqrt\pi}\approx1.128 .
+\]
+(We have not tried to make ``sufficiently large'' explicit; doing so
+would need an explicit constant in the error term of exercise~11(d).)
+Fig.~\ref{fig:normalized} shows the two normalized counts.
+
+\begin{figure}[ht]
+\centering
+\input{figures/normalized_plot}
+\caption{$R(s)/\sqrt s$ and $T(s)/\sqrt s$ for $s\le400$. They tend to
+$2$ and~$\sqrt\pi$. Both are computed from the exact formulas: Theorem~R
+and the schedule~\eqref{eq:schedule}.}
+\label{fig:normalized}
+\end{figure}
+
+\subsection{Why nine is the first size}
+
+Five rounds need dag rounds at levels~$2,3,4,5$ that start with at least
+$4,3,2,1$ free girls, and the round at level~3 then needs $3\times3=9$
+cells (Lemma~\ref{lem:rectangle}). At $s=8$ one sees concretely where the
+attempt breaks down. Five rounds at $s=8$ would need four free girls after~\Hs1,
+the most possible since $\floor{8/2}=4$; so suppose~\Hs1 leaves four girls free,
+and fix a perfect matching. Each of the
+four basic paths contains at least two edges of the perfect matching,
+because the matching from~\Hs1 is maximal, and there are only eight such
+edges; so all four basic paths have level~2, and $\nu=f=4$. By
+Lemma~\ref{lem:15ab}(b) the first round removes at least two SAPs, and
+only two free girls remain for the rounds at levels~$3,4,\ldots$.
+
+With one more pair, one basic path can have level~3 while the other three
+have level~2. Now $\nu=3$, and a single SAP can meet all three basic paths
+of level~2. This is exactly the first state of $\Gam_5$, whose basic paths
+have $3,2,2,2$ cells. In every later state of $\Gam_n$ with $f>L+1$ the
+same thing happens: the hooks~$1,\ldots,k-1$ have more than $L$ cells, so
+$\nu=L+1<f$.
+
+At $s=16$, the size of Knuth's example, Theorem~R gives seven rounds,
+one more than a Tchoukaillon graph; $\Gam_7$ attains them.
+
+\subsection{Initial deficiency}
+
+A Tchoukaillon graph starts with the largest possible number of free
+girls, $\floor{s/2}$. The staircase graph $\Gam_n$ starts with only
+$n-1\approx2\sqrt s$ of them: step~\Hs1 has already found almost all of
+the matching. Yet it takes more rounds, because it spends them on
+augmenting paths of many different levels, one at a time. This also means that
+Theorem~R says nothing about the operational question, which insists on
+the initial deficiency $\floor{s/2}$. An intermediate question is
+the maximum number of rounds when~\Hs1 is required to leave $\floor{s/2}$
+girls free; we have not determined it.

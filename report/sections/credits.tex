@@ -1,0 +1,77 @@
+\section{Credits, literature, and open problems}
+\label{sec:credits}
+
+\subsection{Where the ideas come from}
+
+\paragraph{Augmenting paths and phases.} The union of two matchings and the
+$s-s'$ disjoint augmenting paths are due to Berge~\cite{Berge}. Hopcroft
+and Karp~\cite{HK} introduced phases of vertex-disjoint shortest augmenting
+paths. They proved that path lengths never decrease and that paths of one
+length found in sequence are vertex-disjoint (their Theorem~2 and
+Corollaries~3 and~4), and bounded the number of distinct lengths by
+$2\floor{\sqrt s}+2$ (their Theorem~3), which gives running time
+$O((V+E)\sqrt s)$ in our notation. The paper contains no lower-bound
+example. Karzanov obtained the same bound independently~\cite{Karzanov}.
+As the pre-fascicle notes on page~7, Dinitz's shortest-augmenting-path
+algorithm for network flow, with improvements by Even and Itai, is
+essentially the same procedure when specialized to bipartite matching
+\cite{Dinitz2006}; see also Even and Tarjan~\cite{EvenTarjan}. On random
+graphs long SAPs are rare, so the algorithm typically needs far fewer
+rounds~\cite{Motwani,BMST}. Knuth's Algorithm~H, its
+data structures, Theorem~H, Corollary~K, and exercises~5, 15, and~16 are in
+\cite{Knuth}; Lemma~\ref{lem:15ab} is exercise~15(a,b) with Knuth's answer
+spelled out.
+
+\paragraph{Tchoukaillon numbers.} The sieve of exercise~12 and the numbers
+$\Ch_n$ go back to Erdős and Jabotinsky~\cite{ErdosJabotinsky}, who studied
+their growth; Broline and Loeb~\cite{BrolineLoeb} connected them with the
+Tchoukaillon game and its $1/\pi$ asymptotics (Knuth's answer to
+exercise~11 corrects an error bound claimed there); see also Jones, Taalman,
+and Tongen~\cite{JTT} and OEIS sequence A002491~\cite{OEIS}. Exercise~11(d) gives $\Ch_n=n^2/\pi+O(n^{4/3})$, and Li
+\cite{Li} has extended such asymptotics to the whole Tchoukaillon array.
+Knuth's 2022 lecture~\cite{KnuthRutgers} linked Tchoukaillon numbers to the
+question whether the Hopcroft--Karp algorithm can ever take nonlinear time.
+
+\paragraph{Lower bounds on phases.} Hegerfeld and Kratsch
+\cite{HegerfeldKratsch} study algorithms that follow the Hopcroft--Karp
+phase framework, and show that such an algorithm \emph{may} need
+$\Omega(\sqrt n)$ phases on paths, on trivially perfect graphs, and on
+chain graphs, when the maximal set of SAPs removed in each phase is chosen
+adversarially. Their constructions do not address whether a particular
+implementation, with its own data structures, can be steered into those
+choices by its input; Section~\ref{sec:order} shows that this can fail. On
+graphs whose components have unique augmenting paths, such as the paths of
+Section~\ref{sec:sparse}, every phase is forced, and examples of this kind
+are folklore. We found no earlier statement of the exact value of $R(s)$.
+
+\paragraph{New here.} As far as we know, the following are new: the exact
+value of $R(s)$ and the staircase graphs (Theorems~R, S, and~W); the
+comparison $Q_n\le\Ch_n$; the halving theorem and the classification of the
+literal reading (Theorem~U, Corollary~L); and the results of
+Section~\ref{sec:operational}. The upper bound in Theorem~R is a direct
+refinement of the counting in Theorem~H and in~\cite{HK}. We would be
+grateful to hear of earlier sources for any of these results.
+
+\subsection{Open problems}
+
+\begin{enumerate}
+\item \textbf{The operational question.} Does every $s$ admit an ordered
+  graph realizing the Tchoukaillon schedule? Even an infinite family of
+  sizes would be progress. By Theorem~C such a family must have at least
+  $s/12-O(1)$ independent cycles.
+\item \textbf{The basic-row question.} The same, keeping $f$ disjoint SAPs
+  in every round, as in Knuth's matrices. A positive answer implies one to
+  the first question; by Section~\ref{sec:no-cover} a negative answer would
+  not settle it. All computed examples (Appendix~\ref{app:catalog}) are
+  basic-row.
+\item \textbf{Most rounds from the largest start.} What is the largest number
+  of rounds if~\Hs1 must leave $\floor{s/2}$ girls free? It is at most
+  $R(s)$, and at least $T(s)$ for every $s$ at which the schedule can be
+  realized; the staircase graphs start with only about $2\sqrt s$ free
+  girls.
+\item \textbf{Few edges.} How many edges does an operational realization
+  need? Theorem~C gives $E\ge\frac{25}{12}s-O(1)$, using only two rounds.
+\item \textbf{An explicit threshold.} Make explicit the size beyond which
+  $R(s)>T(s)$ always holds; Section~\ref{sec:comparison} confirms it for
+  $64\le s<3.2\times10^9$.
+\end{enumerate}

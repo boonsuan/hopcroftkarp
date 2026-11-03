@@ -1,0 +1,36 @@
+% Left: basic paths as rows (s = 20); right: the (L,f) plane for s = 16.
+\begin{tikzpicture}[x=.42cm,y=.42cm,baseline=(current bounding box.center)]
+  % rows of 6,5,4,4 cells (= 19 cells) plus one cell on no basic path
+  \foreach \len [count=\r] in {6,5,4,4}{
+    \foreach \c in {1,...,\len}{
+      \ifnum\c<5
+        \draw[fill=sapcol!30,draw=black!35] (\c-1,-\r) rectangle (\c,-\r+1);
+      \else
+        \draw[fill=boyfill,draw=black!35] (\c-1,-\r) rectangle (\c,-\r+1);
+      \fi}}
+  \draw[fill=black!12,draw=black!35] (0,-5.15) rectangle (1,-4.15);
+  \draw[decorate,decoration={brace,amplitude=4pt}] (-.25,-4)--(-.25,0)
+    node[midway,left=4pt,font=\footnotesize] {$f$};
+  \draw[decorate,decoration={brace,amplitude=4pt}] (0,.25)--(4,.25)
+    node[midway,above=4pt,font=\footnotesize] {$L$};
+\end{tikzpicture}\hspace{12mm}%
+\begin{tikzpicture}[baseline=(current bounding box.center)]
+\begin{axis}[
+  width=8.4cm,height=5.8cm, xmin=1.5,xmax=7.6,ymin=0,ymax=9.6,
+  xtick={2,...,7},ytick={1,...,9},
+  xlabel={level $L$}, ylabel={free girls $f$},
+  axis lines=left, axis line style={-}, tick label style={font=\footnotesize},
+  label style={font=\small},
+  legend style={draw=none,fill=none,at={(1.0,1.0)},anchor=north east,font=\footnotesize,
+    cells={anchor=west}}]
+  \addplot[forget plot,fill=boyfill,draw=none,domain=1.67:7.6,samples=80] {16/x} \closedcycle;
+  \addplot[forget plot,domain=1.67:7.6,samples=80,black!55,thick] {16/x};
+  \addplot[chcol,mark=*,mark size=1.8pt,thick,densely dashed]
+     coordinates {(2,8) (3,5) (4,3) (5,2) (6,1)};
+  \addlegendentry{Tchoukaillon schedule, $s=16$}
+  \addplot[qcol,mark=square*,mark size=1.6pt,thick]
+     coordinates {(2,6) (3,5) (4,4) (5,3) (6,2) (7,1)};
+  \addlegendentry{staircase graph $\Gamma_7$, $s=16$}
+  \node[font=\footnotesize,black!60,anchor=south west] at (axis cs:6.45,2.5) {$fL=16$};
+\end{axis}
+\end{tikzpicture}

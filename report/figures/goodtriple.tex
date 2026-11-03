@@ -1,0 +1,38 @@
+% A good triple (proof of Theorem C): before and after the first dag round.
+\begin{tikzpicture}[x=1.05cm,y=.9cm]
+% ---------- left: three basic paths after H1, one selected SAP
+\foreach \k/\y in {1/0,2/-1,3/-2}{
+  \node[girl,free] (u\k) at (0,\y) {$u_\k$};
+  \node[boy]       (v\k) at (1,\y) {$v_\k$};
+  \node[girl]      (w\k) at (2,\y) {$w_\k$};
+  \node[boy,free]  (z\k) at (3,\y) {$z_\k$};
+  \draw[pedge] (u\k)--(v\k) (w\k)--(z\k);
+  \draw[couple] (v\k)--(w\k);}
+\begin{scope}[on background layer]
+  \draw[sap] (u1.center)--(v2.center)--(w2.center)--(z3.center);
+\end{scope}
+\draw[edge,draw=black!60,line width=.7pt] (u1)--(v2) (w2)--(z3);
+\node[font=\footnotesize,anchor=north] at (1.5,-2.5) {after \Hs1};
+% ---------- right: the two new basic paths
+\begin{scope}[xshift=5.3cm]
+  \foreach \p in {1,2,3}{\node[font=\footnotesize,text=black!60] at ({2*\p-1.5},.65) {position \p};}
+  \node[girl,free] (nu2) at (0,0) {$u_2$};
+  \node[boy]       (nv2) at (1,0) {$v_2$};
+  \node[girl]      (nu1) at (2,0) {$u_1$};
+  \node[boy]       (nv1) at (3,0) {$v_1$};
+  \node[girl]      (nw1) at (4,0) {$w_1$};
+  \node[boy,free]  (nz1) at (5,0) {$z_1$};
+  \node[girl,free] (nu3) at (0,-1.9) {$u_3$};
+  \node[boy]       (nv3) at (1,-1.9) {$v_3$};
+  \node[girl]      (nw3) at (2,-1.9) {$w_3$};
+  \node[boy]       (nz3) at (3,-1.9) {$z_3$};
+  \node[girl]      (nw2) at (4,-1.9) {$w_2$};
+  \node[boy,free]  (nz2) at (5,-1.9) {$z_2$};
+  \draw[pedge] (nu2)--(nv2) (nu1)--(nv1) (nw1)--(nz1) (nu3)--(nv3) (nw3)--(nz3) (nw2)--(nz2);
+  \draw[couple] (nv2)--(nu1) (nv1)--(nw1) (nv3)--(nw3) (nz3)--(nw2);
+  \draw[edgecol,line width=.8pt,densely dashed] (nw2) to[bend left=8] (nv2);
+  \node[font=\footnotesize,text=black!65,fill=white,inner sep=1.5pt] at (2.55,-.95) {old couple $v_2w_2$};
+  \node[font=\footnotesize,anchor=north] at (2.5,-2.5) {after the first dag round};
+\end{scope}
+\draw[-{Stealth},black!40,line width=.8pt] (3.65,-1)--(4.75,-1);
+\end{tikzpicture}

@@ -1,0 +1,79 @@
+\begin{tikzpicture}[]
+\begin{scope}[on background layer]
+\draw[sap] (6.120,0.000) -- (5.100,0.000) -- (4.080,0.000) -- (3.060,0.000);
+\draw[sap] (5.100,-0.902) -- (5.100,-1.804) -- (6.120,-1.804) -- (7.140,-1.804);
+\end{scope}
+\draw[edge,draw=black!55,line width=.7pt] (6.120,0.000) -- (5.100,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (6.120,0.000) -- (7.140,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (5.100,-0.902) -- (5.100,-1.804);
+\draw[edge,draw=black!55,line width=.7pt] (5.100,-0.902) -- (5.100,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (4.080,-1.804) -- (5.100,-1.804);
+\draw[edge,draw=black!55,line width=.7pt] (0.000,0.000) -- (1.020,0.000);
+\draw[couple] (2.040,0.000) -- (1.020,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (2.040,0.000) -- (3.060,0.000);
+\draw[couple] (6.120,-1.804) -- (5.100,-1.804);
+\draw[edge,draw=black!55,line width=.7pt] (6.120,-1.804) -- (7.140,-1.804);
+\draw[couple] (4.080,0.000) -- (5.100,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (4.080,0.000) -- (3.060,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (4.080,0.000) -- (4.080,-0.902);
+\draw[couple] (8.160,0.000) -- (7.140,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (8.160,0.000) -- (9.180,0.000);
+\node[girl,free] at (0.000,0.000) {4};
+\node[girl] at (2.040,0.000) {5};
+\node[girl] at (4.080,0.000) {7};
+\node[girl,free] at (6.120,0.000) {1};
+\node[girl] at (8.160,0.000) {8};
+\node[girl,free] at (5.100,-0.902) {2};
+\node[girl,free] at (4.080,-1.804) {3};
+\node[girl] at (6.120,-1.804) {6};
+\node[boy] at (1.020,0.000) {1};
+\node[boy,free] at (3.060,0.000) {2};
+\node[boy] at (5.100,0.000) {5};
+\node[boy] at (7.140,0.000) {7};
+\node[boy,free] at (9.180,0.000) {8};
+\node[boy,free] at (4.080,-0.902) {6};
+\node[boy] at (5.100,-1.804) {3};
+\node[boy,free] at (7.140,-1.804) {4};
+\node[font=\footnotesize] at (4.6,-2.45) {after \Hs1: $f=4$, $L=2$};
+\end{tikzpicture}
+
+\bigskip
+
+\begin{tikzpicture}[]
+\begin{scope}[on background layer]
+\draw[sap] (0.000,0.000) -- (1.020,0.000) -- (2.040,0.000) -- (3.060,0.000) -- (4.080,0.000) -- (4.080,-0.902);
+\draw[sap,draw=boydraw,opacity=.2] (4.080,-1.804) -- (5.100,-1.804) -- (5.100,-0.902) -- (5.100,0.000) -- (6.120,0.000) -- (7.140,0.000) -- (8.160,0.000) -- (9.180,0.000);
+\end{scope}
+\draw[couple] (6.120,0.000) -- (5.100,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (6.120,0.000) -- (7.140,0.000);
+\draw[couple] (5.100,-0.902) -- (5.100,-1.804);
+\draw[edge,draw=black!55,line width=.7pt] (5.100,-0.902) -- (5.100,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (4.080,-1.804) -- (5.100,-1.804);
+\draw[edge,draw=black!55,line width=.7pt] (0.000,0.000) -- (1.020,0.000);
+\draw[couple] (2.040,0.000) -- (1.020,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (2.040,0.000) -- (3.060,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (6.120,-1.804) -- (5.100,-1.804);
+\draw[couple] (6.120,-1.804) -- (7.140,-1.804);
+\draw[edge,draw=black!55,line width=.7pt] (4.080,0.000) -- (5.100,0.000);
+\draw[couple] (4.080,0.000) -- (3.060,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (4.080,0.000) -- (4.080,-0.902);
+\draw[couple] (8.160,0.000) -- (7.140,0.000);
+\draw[edge,draw=black!55,line width=.7pt] (8.160,0.000) -- (9.180,0.000);
+\node[girl,free] at (0.000,0.000) {4};
+\node[girl] at (2.040,0.000) {5};
+\node[girl] at (4.080,0.000) {7};
+\node[girl] at (6.120,0.000) {1};
+\node[girl] at (8.160,0.000) {8};
+\node[girl] at (5.100,-0.902) {2};
+\node[girl,free] at (4.080,-1.804) {3};
+\node[girl] at (6.120,-1.804) {6};
+\node[boy] at (1.020,0.000) {1};
+\node[boy] at (3.060,0.000) {2};
+\node[boy] at (5.100,0.000) {5};
+\node[boy] at (7.140,0.000) {7};
+\node[boy,free] at (9.180,0.000) {8};
+\node[boy,free] at (4.080,-0.902) {6};
+\node[boy] at (5.100,-1.804) {3};
+\node[boy] at (7.140,-1.804) {4};
+\node[font=\footnotesize] at (4.6,-2.45) {after round 2: $f=2$, $L=3$};
+\end{tikzpicture}

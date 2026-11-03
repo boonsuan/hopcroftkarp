@@ -1,0 +1,54 @@
+\section{Programs and checks}
+\label{app:code}
+
+The proofs in these notes do not depend on computation. The programs make
+the examples checkable and catch mistakes. They are in the directory
+\texttt{code/} of the repository
+\href{https://github.com/boonsuan/hopcroftkarp}{github.com/boonsuan/hopcroftkarp},
+and need only Python~3.10 or later and its standard library (NumPy is used
+only by the longest check).
+
+\paragraph{Simulators.} \texttt{algorithm\_h.py} is a literal transcription
+of Algorithm~H: it builds the edge nodes as in answer~6, runs step~\Hs1 as in
+answer~7, and runs steps \Hs2--\Hs{17} under an explicit program counter. It
+records every queue, \A{MARKED} order, \A{BLINK} list, SAP, and the counts
+$W_5$, $W_{13}$, $W_{11}$. \texttt{independent\_audit.py} implements the same
+rules with ordinary loops and lists and shares no code with it; the two must
+produce identical records. \texttt{augmenting.py} contains computations that
+do not use Algorithm~H at all: maximum matchings by plain augmenting paths, an
+exhaustive list of augmenting paths for small graphs, and $\nu$ by a max-flow
+computation.
+
+\paragraph{Examples and figures.} \texttt{examples.py} builds every named
+graph of these notes (the staircase graphs $\Gam_n$ and their padding to any
+$s$, Knuth's 16-pair graph with the input of Appendix~\ref{app:knuth16}, the
+8-pair tree, the halving, caterpillar, six-pair, and triangular chain graphs,
+and the catalog of Appendix~\ref{app:catalog}), together with the schedule
+and the numbers $T(s)$, $R(s)$, $Q_n$, $\Ch_n$. \texttt{make\_figures.py}
+draws every figure that shows a matching, dag, or SAP of a specific graph
+by running the simulator, so the pictures show exactly what Algorithm~H does.
+
+\paragraph{Checks.} \texttt{verify.py} runs fourteen named checks, one for
+each group of computed statements in these notes, and prints a pass/fail line
+for each. They include the hook description of Lemma~\ref{lem:hooks} and the
+search of Lemmas~\ref{lem:bfs} and~\ref{lem:dfs} for $n\le60$, the count
+$2^m-1$ of SAPs (by exhaustive enumeration for $n\le9$), the counts of
+Theorem~W, the padding to every size, the claim about the corner edge in
+Section~\ref{sec:gamma}, the values of $\Ch_n$ and the comparison with $Q_n$,
+the replay of every example and table, $\nu=f$ in the catalog, the tree of
+Section~\ref{sec:no-cover}, and the six-pair and chain obstructions.
+
+\paragraph{Reproducing.} From \texttt{code/}:
+\begin{center}
+\begin{tabular}{ll}
+\texttt{python verify.py} & all checks, about 11 seconds\\
+\texttt{python verify.py -{}-full} & full ranges, including $\Ch_n$ for $n\le10^5$\\
+& and all 103680 six-pair inputs (about 40 seconds)\\
+\texttt{python make\_figures.py} & redraws \texttt{report/figures/gen\_*}\\
+\texttt{python algorithm\_h.py gamma 5} & prints a run (try \texttt{-{}-help})
+\end{tabular}
+\end{center}
+and from \texttt{report/}, two runs of \texttt{pdflatex main.tex} build these
+notes. The website \href{https://hopcroftkarp.site}{hopcroftkarp.site} has its own port of the
+simulator, tested step by step against traces exported from
+\texttt{algorithm\_h.py}.

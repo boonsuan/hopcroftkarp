@@ -1,0 +1,87 @@
+\section{Simpler examples for the running time}
+\label{sec:sparse}
+
+If one only wants inputs on which Algorithm~H does $\Theta(E\sqrt V)$ work,
+without the exact maximum number of rounds, a much simpler family will do.
+It is the folklore example of disjoint paths with $3,5,7,\ldots$ edges, on
+which every phase is forced (compare Hegerfeld and Kratsch's paths
+\cite[Section~5.1]{HegerfeldKratsch}), here joined into a tree and given an
+input order for Algorithm~H, with exact operation counts.
+
+For $k=2,3,\ldots,K$ let $c_k=k(k-1)/2$ and form a path on the girls
+$x_i=g_{c_k+i}$ and boys~$y_i=b_{c_k+i}$, $0\le i<k$:
+\[
+   x_0\sg y_0\sg x_1\sg y_1\sg\cdots\sg x_{k-1}\sg y_{k-1},
+   \qquad\text{with lists}\quad x_0\colon[y_0],\quad x_i\colon[y_{i-1},y_i].
+\]
+Then, for each $k<K$, append the first boy of component $k+1$ to the end of
+the list of the last girl~$x_{k-1}$ of component~$k$. The result is a tree
+(in fact a caterpillar) of maximum degree three with
+\[
+   M=N=s=\frac{K(K+1)}2-1,\qquad E=2s-1 .
+\]
+For $K=4$, the case of Fig.~\ref{fig:caterpillar}, the lists are
+\[
+  [1];\ [1,2,3];\ [3];\ [3,4];\ [4,5,6];\ [6];\ [6,7];\ [7,8];\ [8,9].
+\]
+
+\begin{figure}[ht]
+\centering
+\input{figures/gen_caterpillar}
+\caption{The tree for $K=4$ after~\Hs1, with the SAP of the first dag round.
+Component $k$ is a path whose unique augmenting path has level~$k$; the
+thin links between components never enter a dag.}
+\label{fig:caterpillar}
+\end{figure}
+
+\begin{proposition}
+On this tree Algorithm~H performs $K$ rounds. For $j=2,\ldots,K$ the
+round at level~$L=j$ finds one SAP, which completes component~$j$, and
+\[
+   W_5=(2j-1)(K-j+1)+\Iv{j<K},\qquad W_{13}=j,\qquad W_{11}=j(K-j+1).
+\]
+In total $\sum W_5=K(K-1)(2K+5)/6+K-2$, $\sum W_{13}=K(K+1)/2-1$, and
+$\sum W_{11}=K(K-1)(K+4)/6$, while~\Hs1 examines $s$ entries. Hence
+$\sum W_5/(E\sqrt V)\to1/3$.
+\end{proposition}
+
+\begin{proof}
+Step~\Hs1 scans each component's girls~$x_{k-1},\ldots,x_1$ before $x_0$ and
+couples $x_i\db y_{i-1}$; it never reaches a link. So each component has a
+single free girl~$x_0$ and a single free boy~$y_{k-1}$, its unique augmenting
+path has level~$k$, and \A{QUEUE} lists the free girls from component $K$
+down to component~2. The round at level~$j$ completes component $j$, whose
+free girl is last in the queue, so step~\Hs{16} preserves the order.
+
+The links do not interfere. A link goes from a girl of component $k$ to
+the first boy of component $k+1$, so an alternating path, whose steps from
+girls to boys follow edges, can only move to components of higher index.
+In round~$j$ the free girls lie in components $j,\ldots,K$, so the
+completed components $2,\ldots,j-1$ are never entered. The link out of
+component $k$ starts at the girl~$x_{k-1}$, which lies at level~$k-1$; in
+round~$j$ only levels up to $j-1$ are scanned, so this link is examined
+only in round~$k$, and then its boy is already in $B_1$, so step~\Hs6
+ignores it. Hence the dags are exactly those of the separate paths.
+
+In round~$j$ each of the $K-j+1$ unresolved components contributes its
+girls at levels~$0,\ldots,j-1$: one girl with one neighbour and $j-1$ with
+two, $2j-1$ examinations in all, plus one for the link of component~$j$
+if $j<K$. The shortest component is scanned last at every level, so the
+boys at levels~$1,\ldots,j$ of all unresolved components are marked
+before the free boy is found: $W_{11}=j(K-j+1)$. The only root is the free
+boy of component~$j$, and its search consumes $j$ arcs.
+\end{proof}
+
+Here $\sum W_{13}=\Theta(E)$ but $\sum W_{11}=\Theta(E\sqrt V)$: the mark-resetting loop of
+step~\Hs{11} is as expensive as the breadth-first search, and cannot be
+left out of a running-time analysis.
+
+\begin{remark}
+Replacing component $k$ by a cycle $C_{4k-2}$, with suitable lists, gives a
+2-regular graph with $s=K^2-1$ on which every round finds one SAP and
+$\sum W_5/(E\sqrt V)\to1/(3\sqrt2)$. The staircase graphs do better on
+both counts: they have the largest possible number of rounds, about
+$2\sqrt s$, against about $\sqrt{2s}$ for the tree and $\sqrt s$ for the
+cycles, and $\sum W_5/(E\sqrt V)\to2\sqrt2/3$
+(Theorem~W).
+\end{remark}

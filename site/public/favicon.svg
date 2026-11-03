@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#fbfaf7"/>
+  <!-- a couple, drawn as Knuth's double line, between a girl and a boy -->
+  <path d="M22 24 L42 40" stroke="#1e1e1e" stroke-width="7" stroke-linecap="butt"/>
+  <path d="M22 24 L42 40" stroke="#fbfaf7" stroke-width="2.6" stroke-linecap="butt"/>
+  <circle cx="20" cy="22" r="10" fill="#fbe3e4" stroke="#b23a48" stroke-width="4"/>
+  <rect x="34" y="32" width="20" height="20" rx="4" fill="#ddeaf6" stroke="#2b5c8a" stroke-width="4"/>
+</svg>

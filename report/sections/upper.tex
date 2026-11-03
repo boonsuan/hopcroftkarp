@@ -1,0 +1,117 @@
+\section{How many rounds can there be?}
+\label{sec:upper}
+
+Here is the main theorem. Recall that rounds are counted with~\Hs1 as
+the first one (Section~\ref{sec:counting}), and let
+\[
+   Q_n=\bigfloor{\frac{(n+1)^2}{4}}=\bigfloor{\frac{n+1}2}\bigceil{\frac{n+1}2},
+\]
+the quarter-squares $(Q_1,Q_2,Q_3,\ldots)=(1,2,4,6,9,12,16,20,25,30,36,42,\ldots)$.
+
+\begin{lthm}{R}
+Let $s\ge0$. Every ordered bipartite graph whose maximum matching has
+size~$s$ makes Algorithm~H perform at most
+\[
+   R(s)=\bigfloor{\sqrt{4s+1}}-1
+\]
+rounds, and some ordered graph with $M=N=s$ attains this number.
+Equivalently, $n$ rounds are possible if and only if $s\ge Q_n$.
+\end{lthm}
+
+The two formulations agree: $Q_n\le s$ means $(n+1)^2<4s+4$, that is
+$(n+1)^2\le4s+3$; since squares are $0$ or $1$ modulo~$4$, this is the
+same as $(n+1)^2\le4s+1$, or $n\le\floor{\sqrt{4s+1}}-1$.
+
+This section proves the upper bound. Section~\ref{sec:staircase}
+constructs graphs that attain it.
+
+\subsection{A rectangle that must fit}
+
+The argument is the one in the proof of Theorem~H, applied at the start
+of a round instead of at the end.
+
+\begin{lemma}
+\label{lem:rectangle}
+Suppose that before some round the current matching has $s'$ couples,
+and that its shortest augmenting paths have level~$L$. Then
+\[
+   (s-s')\,L\ \le\ s .
+\]
+\end{lemma}
+
+\begin{proof}
+The union of the current matching with a maximum matching contains
+$s-s'$ vertex-disjoint augmenting paths. Each has level at least $L$,
+hence contains at least $L$ edges of the maximum matching. These edges
+are distinct, and there are only $s$ of them.
+\end{proof}
+
+When $s=M=N$, the deficiency $s-s'$ is the number $f$ of free girls, and
+the lemma says that the $f$ basic paths, drawn as rows of at least~$L$
+cells each, contain an $f\times L$ rectangle inside the set of all $s$
+cells (Fig.~\ref{fig:hyperbola}, left). Nothing requires the rows to have
+equal numbers of cells; a basic path may have a much higher level than a
+SAP.
+
+\begin{figure}[ht]
+\centering
+\input{figures/hyperbola}
+\caption{Left: an example with $s=20$ and $f=4$. The basic paths of the
+matching are drawn one per row, each with at least $L=4$ cells (one cell
+per pair of the perfect matching); the grey cell lies on no basic path.
+The shaded $f\times L$ rectangle shows why $fL\le s$. Right: every round
+of every run is a point $(L,f)$ on or below the hyperbola $fL=s$. Both
+trajectories shown take $s=16$; the staircase graph of
+Section~\ref{sec:staircase} starts with fewer free girls but loses only
+one per round, and so lasts longer.}
+\label{fig:hyperbola}
+\end{figure}
+
+\subsection{Proof of the upper bound}
+
+Suppose a run has $n\ge2$ rounds, so that there are $n-1$ successful
+rounds after~\Hs1. Number these $i=1,2,\ldots,n-1$ and let round~$i$
+have level~$L_i$ and start with deficiency $d_i=s-s'$.
+
+\begin{itemize}
+\item $L_i\ge i+1$. Indeed $L_1\ge2$ because the matching produced by~\Hs1 is
+maximal, and the levels strictly increase from round to round.
+\item $d_i\ge n-i$. Indeed each of the rounds~$i,i+1,\ldots,n-1$ adds at
+least one couple.
+\end{itemize}
+By Lemma~\ref{lem:rectangle}, $s\ge(i+1)(n-i)$ for every $i$. The two
+factors add up to $n+1$, so the product is largest when they are as
+nearly equal as possible: taking $i+1=\ceil{(n+1)/2}$ gives
+$s\ge\floor{(n+1)/2}\ceil{(n+1)/2}=Q_n$. A run with a single round needs
+an edge, so $s\ge1=Q_1$. This proves the upper bound in Theorem~R.
+\qed
+
+\medskip
+Hopcroft and Karp bounded the number of distinct path lengths, and
+hence the number of phases, by $2\floor{\sqrt s}+2$ \cite[Theorem~3]{HK},
+by essentially this argument applied at a single well-chosen phase.
+Using it at every round gives the exact threshold~$Q_n$. What is new in
+Theorem~R is that this threshold is attained.
+
+\subsection{What a run with the most rounds must look like}
+\label{sec:equality}
+
+If $s=Q_n$ and a run has $n$ rounds, then the inequalities in the proof
+are tight at a middle round~$i$, where $(i+1)(n-i)=Q_n$. That round has
+level exactly $L=i+1$ and deficiency exactly $f=n-i$, and the $f$
+disjoint augmenting paths supplied by a maximum matching are all SAPs,
+which together use every one of its $s$ edges. So $\nu=f$ there, and in
+the picture the $f\times L$ rectangle fills all $s$ cells, as in Knuth's
+matrices. From that round on, every round removes exactly one SAP.
+
+The rounds before the middle are where a worst case can differ from a
+Tchoukaillon graph. There $f$ can exceed $L+1$, and then, if $\nu$ were
+equal to $f$, Lemma~\ref{lem:15ab}(b) would force at least two SAPs in the
+round. The
+staircase graphs of Section~\ref{sec:staircase} avoid this by making some
+basic paths longer than~$L$: those paths are counted in~$f$ but are not
+SAPs, so $\nu\le L+1$ and a single SAP can meet all the shortest ones.
+Fig.~\ref{fig:hyperbola} (right) shows the effect: the Tchoukaillon
+schedule starts at the top of the hyperbola and must shed free girls
+quickly, while the staircase graph starts lower and slides down along it,
+one free girl per round.

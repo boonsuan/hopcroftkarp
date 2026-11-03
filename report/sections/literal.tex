@@ -1,0 +1,179 @@
+\section{The literal definition}
+\label{sec:literal}
+
+This section settles the literal reading of exercise~15(c), in which
+every augmenting path has the current shortest level at every round.
+Two consecutive rounds of this kind lose at least half of the free
+girls, while the Tchoukaillon schedule asks the first round at level~2 to
+remove only about a third of them.
+
+\subsection{Uniform consecutive levels force halving}
+
+Throughout this subsection the graph has a perfect matching ($s=M=N$),
+and distances are measured in the oriented graph of
+Section~\ref{sec:dag}.
+
+\begin{lthm}{U}
+Suppose a matching $M'$ with $f$ free girls has $f$ vertex-disjoint SAPs, of
+level~$L$ (property~$\Bp$; it holds in particular under property~$\Up$).
+Let $M''$ be obtained from $M'$ by augmenting along $a\ge1$
+vertex-disjoint SAPs. If every augmenting path for $M''$ has level~$L+1$,
+then
+\[
+   f-a\le a .
+\]
+In particular, if a round has property~$\Bp$ and the next round has
+property~$\Up$ at the next level, the first of the two rounds removes at
+least half of the free girls.
+\end{lthm}
+
+\begin{proof}
+Call the $a$ paths along which we augmented the \emph{selected} paths.
+On a selected path $S=g_0\sg b_1\db g_1\sg\cdots\db g_{L-1}\sg b_L$, write
+$e_i$ for its edge $g_{i-1}\sg b_i$ outside $M'$; it is a couple of~$M''$.
+
+\emph{Step~1: old distances are still lower bounds.} For $M'$, let $d(v)$
+be the distance of $v$ from the free girls, and $h(v)$ the length of a
+shortest directed path from $v$ to a free boy. On a selected path these
+are exact: $d(g_i)=2i$, $d(b_i)=2i-1$, $h(g_i)=2(L-i)-1$, and
+$h(b_i)=2(L-i)$. Passing to $M''$ reverses the arcs of the selected paths
+and makes some free vertices matched. The reversed arcs are $b_i\to
+g_{i-1}$ and $g_i\to b_i$, and they satisfy $d(\text{head})\le
+d(\text{tail})+1$ and $h(\text{tail})\le h(\text{head})+1$: for instance
+$d(g_{i-1})=2i-2\le d(b_i)+1$ and $h(b_i)=2(L-i)\le h(g_{i-1})+1$, and
+similarly for $g_i\to b_i$. All other arcs are unchanged. So $d$ and $h$
+remain lower bounds for the corresponding quantities with respect
+to~$M''$.
+
+\emph{Step~2: contacts are aligned.} Let $A$ be an augmenting path for
+$M''$ that uses the couple $e_i$, say as its $k$th couple counting from its
+free girl. Its part up to $b_i$ has $2k-1$ edges and its part from
+$g_{i-1}$ on has $2L+1-2k$ edges, so Step~1 gives $2k-1\ge2i-1$ and
+$2L+1-2k\ge2(L-i)+1$. Hence $k=i$: a new augmenting path can use $e_i$ only
+as its $i$th couple.
+
+\emph{Step~3: new basic paths meet the selected paths.} Let $P^*$ be the
+perfect matching obtained from $M'$ by augmenting along all $f$ of its
+disjoint SAPs. The symmetric difference of $M''$ and $P^*$ contains $f-a$
+vertex-disjoint augmenting paths for $M''$; call their set $\mathcal A$.
+A member of $\mathcal A$ that avoided all selected paths would be a
+component of $M'\symdiff P^*$ as well, that is, one of the old SAPs, still
+augmenting and of level~$L$, contrary to the hypothesis. So every member
+of $\mathcal A$ meets a selected path, and since all vertices of the
+selected paths are matched in $M''$, it contains one of their couples
+$e_i$.
+
+\emph{Step~4: no selected path meets two members of $\mathcal A$.}
+Suppose the selected path $S$ meets two. Among the couples of $S$ that
+belong to members of $\mathcal A$, pick two, $e_i\in A_i$ and $e_j\in A_j$
+with $i<j$ and $A_i\ne A_j$, such that no couple strictly between them
+belongs to a member of $\mathcal A$. Now splice (Fig.~\ref{fig:splice}):
+follow $A_j$ from its free girl through $e_j$ to $g_{j-1}$, then walk
+backwards along $S$ through $b_{j-1},g_{j-2},\ldots,g_i$ to $b_i$, then
+follow $A_i$ from $b_i$ through $e_i$ to its free boy. The three pieces
+meet only at their ends, so this is an augmenting path for $M''$. By
+Step~2 its number of edges is
+\[
+  2j\;+\;\bigl(2(j-i)-1\bigr)\;+\;\bigl(2L+2-2i\bigr)\;=\;2L+1+4(j-i)\;>\;2L+1,
+\]
+so its level exceeds $L+1$, contradicting the hypothesis.
+
+By Steps~3 and~4, each of the $f-a$ members of $\mathcal A$ meets a
+selected path, and each of the $a$ selected paths meets at most one of
+them. So $f-a\le a$.
+\end{proof}
+
+\begin{figure}[ht]
+\centering
+\input{figures/splice}
+\caption{Step~4 of the proof of Theorem~U. After augmenting along the
+selected path $S$, its couples are the edges $e_k$ from $g_{k-1}$ to $b_k$.
+If two disjoint augmenting paths $A_i$ and $A_j$ cross $S$ at $e_i$ and
+$e_j$, the shaded splice is an augmenting path with $4(j-i)$ more edges
+than either of them.}
+\label{fig:splice}
+\end{figure}
+
+The splice argument also shows that a full set of disjoint new SAPs can
+coexist with much longer augmenting paths.
+
+\begin{proposition}
+\label{prop:longpaths}
+In the situation of Theorem~U, drop the hypothesis that all augmenting
+paths for $M''$ have level~$L+1$, and assume only that its SAPs have level
+$L+1$. If $M''$ has $q$ vertex-disjoint SAPs, each meeting a selected
+path, then $M''$ has an augmenting path with at least
+$2L+1+4(\ceil{q/a}-1)$ edges.
+\end{proposition}
+
+\begin{proof}
+Steps~1 and~2 apply to SAPs. Some selected path $S$ meets at least
+$k=\ceil{q/a}$ of the $q$ SAPs. Choose a shortest interval $[i,j]$ of
+indices such that the couples $e_i,\ldots,e_j$ of $S$ include contacts with
+all $k$ of them. The SAPs owning $e_i$ and $e_j$ have no other contact
+inside the interval (otherwise it could be shortened), and $j-i\ge k-1$.
+Splice as in Step~4; contacts with other SAPs inside the interval do no
+harm, because those paths are not used.
+\end{proof}
+
+For example, in the first dag round of Knuth's 16-pair graph three SAPs
+are selected, and the next matrix has five disjoint SAPs of level~3, each
+meeting a selected one. So the second matching has an augmenting path
+with at least $5+4=9$ edges, that is, of level at least~5; the census in
+Appendix~\ref{app:knuth16} shows six of them.
+
+\subsection{Consequences}
+
+\begin{corollary}
+If property $\Up$ holds in consecutive rounds at levels~$L,L+1,\ldots$,
+and the first of them starts with $f>0$ free girls, there are at most
+$\floor{\lg f}+1$ such rounds. The bound is attained when $f=1,2,4,8,16,32$,
+and we expect it to be attained for every power of~2.
+\end{corollary}
+
+\begin{proof}
+By Theorem~U every round except the last leaves at most $\floor{f/2}$ free
+girls. Appendix~\ref{app:halving} describes ordered graphs, one for each
+$f=2^t$, on which Algorithm~H halves the number of free girls in every
+round while every augmenting path has the current shortest level
+(Fig.~\ref{fig:halving}). For $f\le32$ we verified this by running
+Algorithm~H and enumerating all augmenting paths in every round; the
+appendix explains why it should hold in general, but we have not written
+out a complete proof.
+\end{proof}
+
+\begin{figure}[ht]
+\centering
+\input{figures/gen_halving}
+\caption{The halving graph for $f=4$ ($s=8$), with the matching after~\Hs1.
+Free girl~$u_i$ is adjacent to $b_i$ and, if $i<4$, also to $b_{i+2^{\rho(i)}}$,
+where $2^{\rho(i)}$ is the largest power of~2 dividing~$i$. Each dag round
+merges pairs of neighbouring groups of indices (Appendix~\ref{app:halving}),
+and the free girls go $4\to2\to1\to0$. At every stage all augmenting paths
+have the same level.}
+\label{fig:halving}
+\end{figure}
+
+\begin{lthm}[Corollary]{L}
+For $s\ge1$, a literal realization of the Tchoukaillon schedule exists
+if and only if $s\in\{1,2,3,4,5,8,9\}$.
+\end{lthm}
+
+\begin{proof}
+The schedule starts with $f=\floor{s/2}$ free girls at level~2 and removes
+$a=\ceil{f/3}$ SAPs. If any girls remain, the next round is at level~3 and,
+in a literal realization, has property $\Up$; then Theorem~U requires
+$f\le2\ceil{f/3}$. This fails for $f=3$ and for every $f\ge5$, which
+excludes $s=6,7$ and all $s\ge10$.
+
+For $s=2,4,8$, take the halving graphs with $f=1,2,4$: their free girls go
+$1\to0$, $2\to1\to0$, and $4\to2\to1\to0$, which is the schedule in these
+cases. For $s=3,5,9$, add one isolated girl--boy edge, numbered last;
+\Hs1 matches it and nothing else changes, and $\floor{s/2}$ is unchanged.
+For $s=1$ a single edge will do.
+\end{proof}
+
+So Knuth's 16-pair graph cannot be repaired into a literal example: no
+graph and no input order satisfy the literal definition at $s=16$. Nothing
+in this section obstructs the basic-row or operational readings, and
+Knuth's graph meets the basic-row reading at $s=16$.

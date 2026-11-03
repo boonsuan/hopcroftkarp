@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How slow can Algorithm 7.5.1H be?</title>
+  <meta name="description" content="Interactive notes on exercises 15 and 16 of Knuth’s Pre-Fascicle 14A: how many rounds the Hopcroft–Karp algorithm can take, staircase graphs, and Tchoukaillon graphs." />
+  <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#15171b" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="./favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+  <link rel="canonical" href="https://hopcroftkarp.site/" />
+  <!-- Link previews (Telegram, Slack, X, iMessage, ...) need absolute URLs. -->
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="hopcroftkarp.site" />
+  <meta property="og:url" content="https://hopcroftkarp.site/" />
+  <meta property="og:title" content="How slow can Algorithm 7.5.1H be?" />
+  <meta property="og:description" content="Interactive notes on exercises 15 and 16 of Knuth’s Pre-Fascicle 14A: how many rounds the Hopcroft–Karp algorithm can take, staircase graphs, and Tchoukaillon graphs." />
+  <meta property="og:image" content="https://hopcroftkarp.site/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The title, beside a staircase graph whose hooks are drawn as coloured bands." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preload" href="/src/fonts/LibertinusSerif-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/src/fonts/LibertinusSerif-Italic.woff2" as="font" type="font/woff2" crossorigin />
+  <script>
+    // Apply the saved or system theme before first paint, to avoid a flash.
+    try {
+      const t = localStorage.getItem('hk-theme');
+      document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } catch (e) { document.documentElement.dataset.theme = 'light'; }
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="Chapters" aria-expanded="false" aria-controls="drawer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"/></svg>
+    </button>
+    <a class="brand" href="#top">How slow can Algorithm 7.5.1H be?</a>
+    <div class="toolbar">
+      <button class="icon-btn" id="sound-toggle" type="button" aria-label="Mute sounds">
+        <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+        <svg class="off" hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+      </button>
+      <input class="volume" id="volume" type="range" min="0" max="100" aria-label="Volume" />
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to dark mode">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
+    </div>
+  </header>
+  <!-- Chapter navigation, filled in by src/ui/chapters.ts from the h2 headings:
+       a rail of short lines at the left edge on wide screens, a drawer elsewhere. -->
+  <nav class="rail" id="rail" aria-label="Chapters"></nav>
+  <div class="drawer-scrim" id="drawer-scrim" hidden></div>
+  <nav class="drawer" id="drawer" aria-label="Chapters" hidden></nav>
+
+  <main id="top">
+    <div class="hero">
+      <h1>How slow can Algorithm 7.5.1H be?</h1>
+      <p class="subtitle">Rounds, staircases, and Tchoukaillon graphs</p>
+      <p class="byline">An interactive companion to notes on exercises 15 and 16 of Knuth’s <a class="ext" href="https://www-cs-faculty.stanford.edu/~knuth/taocp.html"><i>The Art of Computer Programming</i></a>, <a class="ext" href="https://www-cs-faculty.stanford.edu/~knuth/fasc14a.ps.gz" title="Knuth’s draft, as gzipped PostScript">Pre-Fascicle 14A</a> (§7.5.1, Bipartite Matching).<br />Created by <a href="https://boonsuan.github.io">ho boon suan</a> using Claude Opus 5.5.</p>
+      <div class="cta">
+        <a class="button primary" href="./hopcroftkarp.pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h7"/></svg>
+          Read the report
+        </a>
+        <a class="button" href="https://github.com/boonsuan/hopcroftkarp">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>
+          See the code
+        </a>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p class="lead">Knuth’s <a class="rep" href="report:Algorithm H in brief">Algorithm 7.5.1H</a> (Algorithm H for short) is his implementation of the <a class="ext" href="https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm">Hopcroft–Karp algorithm</a> for <a class="ext" href="https://en.wikipedia.org/wiki/Matching_(graph_theory)#Matching_in_bipartite_graphs">maximum bipartite matching</a>. It works in <em>rounds</em>, and Knuth’s Corollary K bounds their number by about $2\sqrt s$, where $s$ is the size of a maximum matching. <a class="rep" href="report:Exercise 15 and Tchoukaillon graphs">Exercise 15</a> proposes a family of slow inputs, <em>Tchoukaillon graphs</em>; exercise 16 asks whether they exist; and its answer asks something harder: can any graph force <em>more</em> rounds?</p>
+      <p>It can. With $s$ edges in a maximum matching, some input makes Algorithm H take <a class="rep" href="report:How many rounds can there be?">exactly</a> $\lfloor\sqrt{4s+1}\rfloor-1$ rounds, and none takes more. A Tchoukaillon graph would take about $\sqrt{\pi s}$. The chart compares the two; hover over it, or tap.</p>
+    </div>
+    <div class="widget wide" id="w-rounds"></div>
+
+    <section id="algorithm" class="prose">
+      <h2><span class="num">1</span>Algorithm H, one step at a time</h2>
+      <p>Algorithm H keeps a matching between <em>girls</em> and <em>boys</em>. Matched pairs are <em>couples</em>, drawn as double lines; unmatched vertices are <em>free</em>. An <a class="ext" href="https://en.wikipedia.org/wiki/Augmenting_path"><em>augmenting path</em></a> runs from a free girl to a free boy, alternating between edges outside and inside the matching. Swapping its two kinds of edges adds a couple. A path with $2L-1$ edges has <em>level</em> $L$.</p>
+      <p>Step H1 builds a greedy matching. Then each <em>round</em> does two things:</p>
+      <ul>
+        <li>a <a class="ext" href="https://en.wikipedia.org/wiki/Breadth-first_search">breadth-first search</a> (steps H2–H10) builds a <a class="ext" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">dag</a> of all <em>shortest</em> augmenting paths (SAPs), level by level;</li>
+        <li>a <a class="ext" href="https://en.wikipedia.org/wiki/Depth-first_search">depth-first search</a> (H11–H17) takes SAPs out of the dag one by one, augmenting along each and deleting its vertices, until none is left.</li>
+      </ul>
+      <p>What the algorithm does <a class="rep" href="report:What an input is">depends on the input</a> in only two ways: the numbering of the girls, which fixes the order in which H1 scans them, and the order of each girl’s list of boys. The reverse lists $\mathtt{BLINK}[b]$ that the search follows are built by the algorithm, and new entries go to the <em>front</em>. Watch that happen below. In round 2 of this <a class="rep" href="report:A worked round">nine-pair example</a>, the first round with a dag, the search finds just one SAP, although three disjoint ones exist: the one it finds meets all three.</p>
+    </section>
+    <div class="widget wide" id="w-stepper"></div>
+    <div class="prose">
+      <p class="note">We count step H1 as the first round, as Knuth’s answer to exercise 15(c) does (<a class="rep" href="report:Counting rounds and operations">report §2.5</a>), so a run whose dags have levels $2,3,\ldots,n$ has $n$ rounds. The three counters measure work: $W_5$ adjacency entries examined in step H5, $W_{13}$ arcs consumed in step H13 (including arcs it skips), and $W_{11}$ marks reset in step H11.</p>
+    </div>
+
+    <section id="tchoukaillon" class="prose">
+      <h2><span class="num">2</span>Tchoukaillon graphs</h2>
+      <p>Suppose the graph has a perfect matching ($s=M=N$) and the current matching leaves $f$ girls free. If the round’s dag has level $L$ and there are $f$ disjoint SAPs, then any maximal set of disjoint SAPs has at least $\lceil f/(L+1)\rceil$ members, because one SAP can meet at most $L+1$ of them. Exercise 15(c) asks for a graph that starts with the largest possible number of free girls, $\lfloor s/2\rfloor$, and removes only that minimum at levels $L=2,3,\ldots$. The numbers then follow the <a class="rep" href="report:The schedule and the Tchoukaillon numbers"><em>Tchoukaillon schedule</em></a>
+      $$f_2=\lfloor s/2\rfloor,\qquad a_L=\lceil f_L/(L+1)\rceil,\qquad f_{L+1}=f_L-a_L.$$</p>
+      <p>Knuth noticed that this is the arithmetic of a solitaire game, Tchoukaillon (exercise 11), a one-player relative of <a class="ext" href="https://en.wikipedia.org/wiki/Mancala">mancala</a>. Pit $k$ may be emptied only when it holds exactly $k$ stones, which are sown one each into pits $k-1,\ldots,1$ and the store. For each number of stones there is exactly one winning position. Play it below; the number of moves made from pit $L$ is $a_L$.</p>
+    </section>
+    <div class="widget wide" id="w-solitaire"></div>
+    <div class="prose">
+      <p>A Tchoukaillon graph needs $n$ rounds exactly when $\Ch_n\le s&lt;\Ch_{n+1}$, where the <em>Tchoukaillon numbers</em> $\Ch_n=1,2,4,6,10,12,18,22,30,\ldots$ grow like $n^2/\pi$ (<a class="ext" href="https://oeis.org/A002491">OEIS A002491</a>; <a class="ext" href="https://arxiv.org/abs/math/9502225">Broline and Loeb</a>). Knuth’s answer to exercise 15(d) describes a <a class="rep" href="report:Knuth's sixteen-pair example">16-pair example</a> by a sequence of matrices. Each row lists the girl–boy pairs that a <em>basic path</em> visits, and each round’s SAPs splice several rows into longer ones. With the input order given in <a class="rep" href="report:An input order for Knuth's sixteen-pair graph">Appendix A of the report</a>, Algorithm H passes through exactly these matrices:</p>
+    </div>
+    <div class="widget wide" id="w-knuth"></div>
+    <div class="prose">
+      <p>Read literally, exercise 15 also asks that <em>every</em> augmenting path have the current shortest level. Knuth’s graph does not satisfy this: right after H1 it has augmenting paths of levels 2 and 3 from the same free girl. The report separates <a class="rep" href="report:Three readings of the definition">three readings of the definition</a>: <em>literal</em> (every augmenting path has the shortest level), <em>basic-row</em> ($f$ disjoint SAPs in every round), and <em>operational</em> (just the numbers).</p>
+    </div>
+
+    <section id="bound" class="prose">
+      <h2><span class="num">3</span>How many rounds can there be?</h2>
+      <p>Before a round at level $L$ with $f$ free girls, a maximum matching supplies $f$ disjoint augmenting paths, each using at least $L$ of its $s$ edges. So $fL\le s$: every round of every run is a point on or below the hyperbola $fL=s$. With $n$ rounds, the $i$th round after H1 has level at least $i+1$ and at least $n-i$ free girls, and maximizing $(i+1)(n-i)$ gives the <a class="rep" href="report:Proof of the upper bound">whole answer</a>:</p>
+      <div class="statement"><b>Theorem R.</b> A graph whose maximum matching has $s$ edges can make Algorithm H perform at most $R(s)=\lfloor\sqrt{4s+1}\rfloor-1$ rounds, and for every $s$ some ordered graph does. Equivalently, $n$ rounds are possible exactly when $s\ge Q_n=\lfloor (n+1)^2/4\rfloor$ (<a class="ext" href="https://oeis.org/A002620">the quarter-squares</a>).</div>
+      <p>The Tchoukaillon schedule starts at the top of the hyperbola and must shed free girls fast. A <a class="rep" href="report:What a run with the most rounds must look like">worst case</a> starts lower and slides down along it, one free girl per round.</p>
+    </section>
+    <div class="widget wide" id="w-hyperbola"></div>
+
+    <section id="staircase" class="prose">
+      <h2><span class="num">4</span>Staircase graphs</h2>
+      <p>The bound is attained by the <a class="rep" href="report:Staircase graphs"><em>staircase graphs</em></a> $\Gamma_n$. They are <a class="ext" href="https://en.wikipedia.org/wiki/Planar_graph">planar</a>, have maximum degree three, and come with an input order under which every step of Algorithm H can be predicted. The cells form $n-1$ left-justified rows, plus one extra <em>corner</em> cell at the bottom. Each cell holds a girl and a boy; a boy is joined to his own girl, to the girl of the next cell in his row, and to the girl of the cell below, except that the edge into the corner is left out (it would only complicate the proofs; the explorer below lets you add it).</p>
+      <p>When $f$ girls are free, the basic paths are <a class="rep" href="report:Hooks"><em>hooks</em></a>, one starting at the first cell of each of rows $1,\ldots,f$. Hook $x$ runs east along row $x$ to column $c=f+1-x$ and then turns south down column $c$; a row with fewer than $c$ cells is a hook by itself, and the last hook ends at the corner.</p>
+      <p>The trick is to keep some hooks longer than the shortest level. They count as free girls but are not SAPs, so at most $L+1$ disjoint SAPs exist. Because new entries go to the front of the reverse lists, <a class="rep" href="report:The forced search">the first search</a> takes the first arc at every boy and descends a staircase through every shortest hook. That one SAP blocks all the others: if $m$ hooks have the shortest level, the dag contains $2^m-1$ SAPs, and <a class="rep" href="report:How much one path blocks">every one of them meets it</a>.</p>
+    </section>
+    <div class="widget wide" id="w-staircase"></div>
+    <div class="prose">
+      <p>On these graphs the breadth-first searches alone <a class="rep" href="report:Counting the work">examine $\Theta(E\sqrt V)$ adjacency entries</a>, so Corollary K is tight even for sparse planar graphs. Since $Q_n\le\Ch_n$ always, a staircase graph is never faster than a Tchoukaillon graph would be. It is <a class="rep" href="report:Where the true maximum is larger">strictly slower</a> for $s=9$, for every $s\ge64$, and for all sizes in between except $10,\ldots,15$, $18$, $19$, $22,23,24$, $34$, $35$, $48$ and $60,\ldots,63$; asymptotically $R(s)-T(s)\sim(2-\sqrt\pi)\sqrt s$.</p>
+    </div>
+
+    <section id="literal" class="prose">
+      <h2><span class="num">5</span>The literal definition</h2>
+      <p>Suppose a round has $f$ disjoint SAPs of level $L$, and the next round has the literal property: every augmenting path has level $L+1$. Then the first of the two rounds removes at least half of the free girls. The heart of the <a class="rep" href="report:Uniform consecutive levels force halving">proof</a> is a splice. After augmenting along a selected path $S$, its new couples $e_1,\ldots,e_L$ can only be used <em>in position</em>: a new augmenting path that uses $e_i$ uses it as its $i$th couple. If two new disjoint paths crossed $S$ at $e_i$ and $e_j$, then following one, walking back along $S$, and finishing along the other would give an augmenting path with $4(j-i)$ more edges, although every augmenting path of the next round has level $L+1$.</p>
+    </section>
+    <div class="widget wide" id="w-splice"></div>
+    <div class="prose">
+      <p>The Tchoukaillon schedule asks the round at level 2 to remove only about a third of the free girls. So, for $s\ge1$, literal Tchoukaillon graphs <a class="rep" href="report:Consequences">exist only when</a> $s\in\{1,2,3,4,5,8,9\}$.</p>
+    </div>
+
+    <section id="open" class="prose">
+      <h2><span class="num">6</span>The open question</h2>
+      <p>Can the Tchoukaillon schedule be realized for every $s$, with no condition on the paths? <a class="rep" href="report:Small sizes">Computer search</a> has found inputs for every $s\le41$, and all of them even keep $f$ disjoint SAPs in every round. Any family that works for unboundedly large $s$ needs at least $s/12-O(1)$ <a class="rep" href="report:Realizations need cycles">independent cycles</a> (<a class="ext" href="https://en.wikipedia.org/wiki/Cycle_space">cycle rank</a>).</p>
+      <p>The <a class="rep" href="report:The input order matters">input order is a genuine obstacle</a>. The six-pair graph below admits a run in which each of the rounds at levels 2, 3, 4 removes a maximal set consisting of a single SAP, which is exactly the schedule for $s=6$. But Algorithm H chooses its SAPs by its own rules: its queue order, the insertion at the front in step H6, and the replacement rule of step H16. Try to find a numbering and list orders that make it follow the schedule, or let the computer try all 103,680 of them.</p>
+    </section>
+    <div class="widget wide" id="w-sixpair"></div>
+    <div class="prose">
+      <p>The <a class="rep" href="report:Computed realizations for small sizes">computed realizations</a> for even $s\le40$ can be explored here; each one runs Algorithm H live and compares the numbers of SAPs with the schedule.</p>
+    </div>
+    <div class="widget wide" id="w-catalog"></div>
+
+    <section id="sandbox" class="prose">
+      <h2><span class="num">7</span>Try your own graph</h2>
+      <p>Write one line per girl, $1,2,\ldots,M$, listing her boys in the order of her list. Algorithm H runs on exactly that input, so changing the order of a list, or swapping two girls’ numbers, can change what it does.</p>
+    </section>
+    <div class="widget wide" id="w-sandbox"></div>
+
+    <div class="prose">
+      <p class="note">Page, exercise, and step numbers refer to the zeroth printing of Pre-Fascicle 14A, revision −88, dated 18 September 2026. A pre-fascicle is a working draft, so these numbers may change.</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>Created by <a href="https://boonsuan.github.io">ho boon suan</a> using Claude Opus 5.5 · <a href="./hopcroftkarp.pdf">Report (PDF)</a> · <a href="https://github.com/boonsuan/hopcroftkarp">Code on GitHub</a></p>
+    <p>Text and figures: CC BY 4.0. Code: MIT. Fonts: Libertinus (SIL Open Font License).</p>
+  </footer>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

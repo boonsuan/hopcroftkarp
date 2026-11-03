@@ -1,0 +1,45 @@
+\section{Computed realizations for small sizes}
+\label{app:catalog}
+
+For every even $s=2h\le40$ the search described in
+Section~\ref{sec:catalog} found an ordered graph that realizes the
+Tchoukaillon schedule; by Proposition~\ref{prop:odd} this covers all
+$s\le41$. In each example~\Hs1 produces the matching
+$g_{h+j}\db b_{2j-1}$ ($1\le j\le h$) and leaves girls~$h,h-1,\ldots,1$ free,
+in that order. The table gives the number of edges, the number of rounds
+(counting~\Hs1), the work counts summed over all rounds after~\Hs1, and the
+numbers of SAPs removed at levels~$2,3,\ldots$. The entry for $s=16$ is
+Knuth's graph with the input of Appendix~\ref{app:knuth16}. The complete
+ordered lists are in the file \texttt{code/data/numerical\_witnesses.json},
+and \texttt{python algorithm\_h.py catalog $s$ -{}-json} prints every queue,
+dag, and SAP of the run on any of them (Appendix~\ref{app:code}).
+
+\begin{center}\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{rrrrrrrl}
+\toprule
+$s$&$E$&rounds&\Hs1&$W_5$&$W_{13}$&$W_{11}$&SAPs removed\\
+\midrule
+2&3&2&2&3&2&2&$1$\\
+4&7&3&5&12&7&7&$1,1$\\
+6&12&4&7&34&14&18&$1,1,1$\\
+8&15&4&9&37&16&20&$2,1,1$\\
+10&21&5&13&67&29&33&$2,1,1,1$\\
+12&28&6&16&133&46&60&$2,1,1,1,1$\\
+14&31&6&19&123&49&56&$3,1,1,1,1$\\
+16&35&6&20&146&52&67&$3,2,1,1,1$\\
+18&43&7&25&212&77&93&$3,2,1,1,1,1$\\
+20&46&7&27&223&78&97&$4,2,1,1,1,1$\\
+22&55&8&30&367&109&148&$4,2,1,1,1,1,1$\\
+24&60&8&34&378&117&156&$4,2,2,1,1,1,1$\\
+26&63&8&39&362&118&149&$5,2,2,1,1,1,1$\\
+28&67&8&39&363&121&150&$5,3,2,1,1,1,1$\\
+30&77&9&45&515&164&208&$5,3,2,1,1,1,1,1$\\
+32&79&9&47&542&164&221&$6,3,2,1,1,1,1,1$\\
+34&91&10&55&709&214&270&$6,3,2,1,1,1,1,1,1$\\
+36&97&10&56&748&224&285&$6,3,2,2,1,1,1,1,1$\\
+38&100&10&58&779&220&299&$7,3,2,2,1,1,1,1,1$\\
+40&104&10&61&716&225&272&$7,4,2,2,1,1,1,1,1$\\
+\bottomrule
+\end{tabular}
+\end{center}

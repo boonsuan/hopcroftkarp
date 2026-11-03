@@ -1,0 +1,21 @@
+{
+  "name": "hopcroftkarp-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Interactive companion to the notes 'How slow can Algorithm H be?'",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "katex": "0.16.22"
+  },
+  "devDependencies": {
+    "typescript": "5.8.3",
+    "vite": "6.3.5",
+    "vitest": "3.1.4"
+  }
+}

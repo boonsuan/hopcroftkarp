@@ -1,0 +1,14 @@
+% Adjacency blocks after a minimum H1 (rows: girls; columns: boys).
+\begin{tikzpicture}[x=1.15cm,y=1.0cm]
+\draw[fill=boyfill] (0,0) rectangle (1,1);
+\draw[fill=white] (1,0) rectangle (2,1);
+\draw[fill=boyfill] (0,-1) rectangle (1,0);
+\draw[fill=boyfill] (1,-1) rectangle (2,0);
+\node at (1.5,.5) {$0$};
+\node[font=\small,anchor=east] at (-.1,.5) {$G^\circ$ (free)};
+\node[font=\small,anchor=east] at (-.1,-.5) {$G^\bullet$ (matched)};
+\node[font=\small,anchor=south] at (.5,1.05) {$B^\bullet$};
+\node[font=\small,anchor=south] at (1.5,1.05) {$B^\circ$};
+\node[font=\footnotesize,anchor=south,text=black!65] at (.5,1.45) {matched};
+\node[font=\footnotesize,anchor=south,text=black!65] at (1.5,1.45) {free};
+\end{tikzpicture}

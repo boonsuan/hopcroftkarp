@@ -1,0 +1,87 @@
+% ---------------------------------------------------------------
+% Colours (shared with the figures; the companion website should
+% reuse the same palette)
+\definecolor{linkblue}{HTML}{1F4E79}
+\definecolor{girlfill}{HTML}{FBE3E4}
+\definecolor{girldraw}{HTML}{B23A48}
+\definecolor{boyfill}{HTML}{DDEAF6}
+\definecolor{boydraw}{HTML}{2B5C8A}
+\definecolor{sapcol}{HTML}{E8871E}
+\definecolor{couplecol}{HTML}{1E1E1E}
+\definecolor{edgecol}{HTML}{9AA3AD}
+\definecolor{deadcol}{HTML}{C9CDD2}
+\definecolor{rowA}{HTML}{7FB3D5}
+\definecolor{rowB}{HTML}{B9A3E3}
+\definecolor{rowC}{HTML}{82C99A}
+\definecolor{rowD}{HTML}{E3A6C8}
+\definecolor{rowE}{HTML}{9BB8E8}
+\definecolor{rowF}{HTML}{76C7C0}
+\definecolor{rowG}{HTML}{C7C97A}
+\definecolor{rowH}{HTML}{A9B4BE}
+\definecolor{chcol}{HTML}{B23A48}
+\definecolor{qcol}{HTML}{2B5C8A}
+\definecolor{boxbg}{HTML}{F6F4EE}
+
+% ---------------------------------------------------------------
+% TikZ styles
+\tikzset{
+  girl/.style={circle,draw=girldraw,fill=girlfill,line width=.6pt,
+    minimum size=5.2mm,inner sep=0pt,font=\scriptsize},
+  boy/.style={rounded corners=1.2pt,rectangle,draw=boydraw,fill=boyfill,
+    line width=.6pt,minimum size=4.7mm,inner sep=0pt,font=\scriptsize},
+  free/.style={line width=1.5pt,fill=white},
+  dead/.style={draw=deadcol,fill=white,text=deadcol},
+  small girl/.style={girl,minimum size=3.4mm,font=\tiny},
+  small boy/.style={boy,minimum size=3.1mm,font=\tiny},
+  edge/.style={draw=edgecol,line width=.55pt},
+  pedge/.style={draw=couplecol!70,line width=.7pt},
+  couple/.style={draw=couplecol,double=white,double distance=1.25pt,line width=.45pt},
+  sap/.style={draw=sapcol,line width=6.5pt,line cap=round,line join=round,opacity=.45},
+  arc/.style={-{Stealth[length=2.2mm,width=1.6mm]},draw=couplecol!80,line width=.55pt},
+  hook/.style={line width=8.5pt,line cap=round,line join=round,opacity=.38},
+  lab/.style={font=\scriptsize,text=black!70},
+}
+
+% ---------------------------------------------------------------
+% Notation
+\newcommand{\Ch}{\text{\fontencoding{T2A}\selectfont Ч}}   % Tchoukaillon numbers
+\newcommand{\A}[1]{\texttt{#1}}                             % array names
+\newcommand{\Hs}[1]{\textup{H#1}}                           % step names
+% Knuth's x --- y (an ordinary edge) and x === y (a couple)
+\newcommand{\sg}{\mathrel{\vcenter{\hbox{\rule{1.15em}{.45pt}}}}}
+\newcommand{\db}{\mathrel{\vcenter{\offinterlineskip
+   \hbox{\rule{1.15em}{.45pt}}\kern1.2pt\hbox{\rule{1.15em}{.45pt}}}}}
+\newcommand{\floor}[1]{\lfloor#1\rfloor}
+\newcommand{\ceil}[1]{\lceil#1\rceil}
+\newcommand{\bigfloor}[1]{\left\lfloor#1\right\rfloor}
+\newcommand{\bigceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\Iv}[1]{[#1]}
+\newcommand{\symdiff}{\mathbin{\triangle}}
+\newcommand{\Gam}{\Gamma}
+\newcommand{\Up}{\mathsf U}
+\newcommand{\Bp}{\mathsf F}
+\newcommand{\Op}{\mathsf O}
+
+% ---------------------------------------------------------------
+\makeatletter
+% Theorems.  Major results get letters, in the style of the pre-fascicle
+% (Theorem H, Corollary K); minor ones are numbered.
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{corollary}[lemma]{Corollary}
+\newtheorem*{lettered@thm}{\lettered@name}
+\newcommand{\lettered@name}{}
+\newenvironment{lthm}[2][Theorem]
+  {\renewcommand{\lettered@name}{#1 #2}\begin{lettered@thm}}
+  {\end{lettered@thm}}
+\makeatother
+\theoremstyle{definition}
+\newtheorem{definition}[lemma]{Definition}
+\newtheorem{example}[lemma]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[lemma]{Remark}
+
+% A shaded box for summaries
+\newtcolorbox{summarybox}{breakable,colback=boxbg,colframe=boxbg,arc=3pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt,before skip=8pt,after skip=8pt}

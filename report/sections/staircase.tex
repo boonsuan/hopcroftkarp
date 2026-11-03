@@ -1,0 +1,521 @@
+\section{Staircase graphs}
+\label{sec:staircase}
+
+This section constructs, for every $n\ge2$, an ordered graph $\Gam_n$
+with $s=Q_n$ on which Algorithm~H performs $n$ rounds, and proves exactly
+what the algorithm does on it. The graph of Fig.~\ref{fig:gamma5} is
+$\Gam_5$. The idea, already visible in Section~\ref{sec:worked}, is to let
+the basic paths have different levels, and to arrange the input so that
+the depth-first search always finds one SAP that crosses every shortest
+basic path. That single path blocks all the others.
+
+\subsection{The graph and its input}
+\label{sec:gamma}
+
+Fix $n\ge2$. The graph $\Gam_n$ is built on a diagram of \emph{cells}
+arranged in $n-1$ left-justified rows. Row~$a$ has
+\[
+   \ell_a=\max\Bigl(2,\ \bigfloor{\frac{n+2-a}{2}}\Bigr)\qquad(1\le a\le n-1)
+\]
+cells, so the numbers of cells decrease by one every two rows, except that the
+last row has two cells. Equivalently, cell~$(a,c)$ (row~$a$, column~$c$)
+exists if $a+2c\le n+2$, and there is one more cell~$(n-1,2)$, which we
+call the \emph{corner}. For $n=5$ the rows have $3,2,2,2$ cells; for
+$n=11$ they are $6,5,5,4,4,3,3,2,2,2$ (Fig.~\ref{fig:shape}).
+
+\begin{figure}[ht]
+\centering
+\input{figures/gen_shape}
+\caption{The cell diagram of $\Gam_{11}$; the numbers on the left are the
+numbers of cells in the rows. The shaded cell is the corner cell~$(10,2)$.}
+\label{fig:shape}
+\end{figure}
+
+Each cell~$(a,c)$ holds a girl~$g_{a,c}$ and a boy~$b_{a,c}$. The edges are
+\begin{itemize}
+\item $g_{a,c}\sg b_{a,c}$ for every cell (the \emph{inside} edges);
+\item $b_{a,c}\sg g_{a,c+1}$ whenever both cells exist (\emph{horizontal}
+  edges, from a boy to the girl of the next cell in his row);
+\item $b_{a,c}\sg g_{a+1,c}$ whenever both cells exist (\emph{vertical}
+  edges, from a boy to the girl of the cell below), \emph{except} the
+  single edge $b_{n-2,2}\sg g_{n-1,2}$ into the corner, which is omitted.
+\end{itemize}
+The omission is a convenience for the proofs. With that edge present,
+Algorithm~H still performs $n$ rounds of one SAP each (we have checked
+this for $n\le30$), but in every round with at least two free girls the
+corner girl would join the list $\A{BLINK}$ of a free boy, which breaks
+the clean description in Lemma~\ref{lem:bfs} and changes the counts of
+Theorem~W.
+So a girl is adjacent to at most three boys: the boy to her left, the boy
+above her, and her own. In Fig.~\ref{fig:gamma5} girls sit at the
+upper left of their cells and boys at the lower right, so horizontal
+edges run up and to the right, and vertical edges down and to the left.
+
+\paragraph{The input order.}
+Number the boys~$1,2,\ldots,s$ in row-major order of their cells (row by
+row, left to right). Number the first girl of each row, $g_{a,1}$, as
+$n-a$; number the remaining girls~$n,n+1,\ldots,s$ in row-major order.
+Each girl's list consists of
+\[
+  \text{her left boy } b_{a,c-1},\quad\text{then her upper boy } b_{a-1,c},
+  \quad\text{then her own boy } b_{a,c},
+\]
+omitting those that do not exist or are not adjacent to her. For $n=5$
+this gives the lists~\eqref{eq:gamma5lists}.
+
+\begin{proposition}
+\label{prop:gamma}
+The graph $\Gam_n$ is connected and planar, and has maximum degree three.
+Its inside edges form a perfect matching, and
+\[
+   M=N=s=Q_n,\qquad E=3Q_n-n-\bigfloor{\frac{n+1}2}.
+\]
+Step~\Hs1 couples every horizontal edge $b_{a,c}\db g_{a,c+1}$. It leaves
+free exactly the first girl and the last boy of every row, and puts the
+free girls into \A{QUEUE} in row order~$g_{1,1},g_{2,1},\ldots,g_{n-1,1}$.
+It examines $s+n-2$ adjacency entries.
+\end{proposition}
+
+\begin{proof}
+Substituting $j=n+2-a$, the numbers of cells in the rows are $\max(2,\floor{j/2})$ for
+$3\le j\le n+1$. Since $\sum_{j=1}^{m}\floor{j/2}=\floor{m^2/4}$, their sum is
+$\floor{(n+1)^2/4}-\floor{1/2}-\floor{2/2}+1=Q_n$. There are $s$ inside
+edges, $s-(n-1)$ horizontal edges, and one vertical edge into every cell
+outside row~1 except the corner, so $s-\ell_1-1$ vertical edges when
+$n\ge3$; with $\ell_1=\floor{(n+1)/2}$ this gives $E$ (and $n=2$ is
+checked directly). Girls have at most three neighbors by construction,
+and so do boys (their own girl, the girl to the right, and the girl
+below). Rows are connected by their horizontal and inside edges, and the
+vertical edges in column~1 connect the rows. The drawing of
+Fig.~\ref{fig:gamma5} has no crossings, because every edge stays inside
+its own cell or in the gap between two adjacent cells.
+
+Step~\Hs1 scans girls~$s,s-1,\ldots,n$ first; these are the girls not in
+column~1, and each takes the first boy on her list, her left boy. All
+these boys are different. Then girls~$n-1,\ldots,1$, the first girls of
+rows~$1,\ldots,n-1$, find their upper and own boys taken. The count of
+examinations is $(s-n+1)+1+2(n-2)$.
+\end{proof}
+
+\subsection{Watching the smallest interesting case}
+\label{sec:watch}
+
+Before the general proof, look at the whole run on $\Gam_5$
+(Fig.~\ref{fig:gamma5rounds}). The coloured bands are the basic paths
+relative to the inside-edge perfect matching. Initially they are the rows
+of the diagram, with $3,2,2,2$ cells, that is, of levels~$3,2,2,2$. The
+three basic paths of level~2 are disjoint SAPs, so the dag has $L=2$ and
+$\nu=3$, while $f=4$. Yet the single SAP that Algorithm~H finds runs from
+the free girl of row~4 up through row~3 to the free boy of row~2, meeting
+all three. After augmenting there are three basic paths, each with three
+cells: the full rectangle that Section~\ref{sec:equality} demands. The
+next SAP climbs a staircase through all three of them, and so on.
+
+\begin{figure}[ht]
+\centering
+\resizebox{\linewidth}{!}{\input{figures/gen_gamma5_rounds}}
+\caption{The run of Algorithm~H on $\Gam_5$. Each panel shows the
+matching before one round, drawn as in Fig.~\ref{fig:gamma5} but without
+labels; coloured bands are the current basic paths, and the orange band is
+the one SAP that the round finds. The graph never changes, only the
+matching. The basic paths get longer and fewer; their numbers of cells go
+$(3,2,2,2)\to(3,3,3)\to(4,4)\to(5)$.}
+\label{fig:gamma5rounds}
+\end{figure}
+
+\begin{center}\small
+\begin{tabular}{crrrrrl}
+\toprule
+$L$&$f$&SAPs&$W_5$&$W_{13}$&$W_{11}$&the SAP, as couples $(g,b)$ in path order\\
+\midrule
+2&4&1&17&5&8&$(1,6),(8,5)$\\
+3&3&1&19&8&9&$(2,4),(7,2),(6,3)$\\
+4&2&1&17&8&8&$(3,1),(5,2),(7,5),(8,7)$\\
+5&1&1&9&5&5&$(4,1),(3,4),(2,6),(1,8),(9,9)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent
+The SAPs are listed by their newly formed couples, using the numerical
+labels of Fig.~\ref{fig:gamma5}; for example $(1,6),(8,5)$ is
+$g_1\sg b_6\db g_8\sg b_5$. Step
+\Hs1 examined 12 adjacency entries, so the run costs $12+62+26+30$
+elementary operations in all.
+
+\subsection{Hooks}
+\label{sec:hooks}
+
+To describe the basic paths in general, call the state with $f$ free girls
+\emph{state~$f$}; in it the dag will have level
+\[
+   L=n+1-f.
+\]
+The run goes through states~$f=n-1,n-2,\ldots,1,0$.
+
+\begin{definition}
+In state~$f$, for $1\le x\le f$, the \emph{hook} $x$ is the following
+sequence of cells. Let $c=f+1-x$ be its \emph{corner column}.
+\begin{itemize}
+\item If row~$x$ has fewer than $c$ cells, hook~$x$ is row~$x$.
+\item Otherwise hook~$x$ consists of $(x,1),(x,2),\ldots,(x,c)$, followed by
+  the cells below $(x,c)$ in column~$c$, from top to bottom, except the
+  corner cell.
+\item The last hook, $x=f$, ends with the corner cell~$(n-1,2)$.
+\end{itemize}
+\end{definition}
+
+So a hook runs east along its row to its corner column and then turns
+south (Fig.~\ref{fig:hooks}). Let $M_f$ be the matching that couples
+the boy of each cell of a hook to the girl of the next cell of the same
+hook, and couples the girl and boy of every cell that is in no hook. A
+cell in no hook is called \emph{retired}; the others are \emph{alive}.
+In $M_f$ the free girls are the first girls of the hooks, the free boys
+are the last boys of the hooks, and the basic paths with respect to the
+inside edges are precisely the hooks. Let $M_0$ be the perfect matching
+of inside edges.
+
+\begin{figure}[ht]
+\centering
+\input{figures/gen_hooks}
+\caption{State~$f=5$ of $\Gam_{11}$, before the round at level~$L=7$. The
+five hooks (coloured) run east along their rows and turn south at
+columns~$5,4,3,2,1$. Cells in columns~$6$ and beyond are retired. All
+five hooks have $7$ cells. For instance cell~$(7,2)$ lies in
+hook~$\min(7,6-2)=4$, at position~$2+\max(0,7+2-6)=5$, as
+Lemma~\ref{lem:hooks}(a) says. The orange staircase is the SAP that
+Algorithm~H finds: it starts at the free girl of hook~5 and climbs to the
+free boy of hook~1.}
+\label{fig:hooks}
+\end{figure}
+
+\begin{lemma}
+\label{lem:hooks}
+Let $1\le f\le n-1$ and $L=n+1-f$.
+\begin{enumerate}[label=(\alph*)]
+\item The hooks are disjoint, and their cells are exactly the cells in
+  columns~$1,\ldots,f$ together with the corner cell. An alive cell
+  $(a,c)$ other than the corner lies in hook~$x=\min(a,f+1-c)$, at position
+  $y=c+\max(0,a+c-f-1)$ along it; the corner is at position~$L$ of
+  hook~$f$.
+\item Consecutive cells of a hook are joined by a horizontal or vertical
+  edge of $\Gam_n$, so $M_f$ is a matching of $\Gam_n$.
+\item Hook~$x$ has $\max(\ell_x,L)$ cells. Hence hooks~$1,\ldots,k-1$
+  have more than $L$ cells and hooks~$k,\ldots,f$ have exactly $L$ cells,
+  where
+  \[
+      k=\max(1,f-L),\qquad m=f-k+1=\min(f,L+1).
+  \]
+\item $M_{n-1}$ is the matching produced by~\Hs1.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) A cell~$(a,c)$ with $c\le f$ and $a+c\le f+1$ lies in row~$a$ at or
+before the corner column~$f+1-a$ of hook~$a$, so it belongs to hook~$a$ at
+position~$c$. If $a+c>f+1$, the hook whose corner column is $c$ is hook
+$x=f+1-c<a$; since columns are top-justified, cell~$(x,c)$ exists, so
+hook~$x$ turns south at $(x,c)$ and contains $(a,c)$ at position
+$c+(a-x)$, unless $(a,c)$ is the corner. Conversely every hook stays in
+columns~$\le f$ apart from the corner, and the two cases above assign each
+cell to only one hook.
+
+(b) East steps use horizontal edges and south steps use vertical edges;
+the omitted edge would lead into the corner, which is entered from its
+left neighbour $(n-1,1)$ instead.
+
+(c) Write $c=f+1-x$, and note that $2\ell_x\ge n+1-x$ always. If
+$\ell_x<c$, hook~$x$ is row~$x$; then $x\le f-\ell_x$, so
+$2\ell_x\ge n+1-f+\ell_x$, that is, $\ell_x\ge L$. Otherwise, if $x<f$, hook
+$x$ consists of $c$ cells of row~$x$ followed by the cells of column~$c$
+below it. Column~$c\ge2$ ends at row~$n+2-2c$ (the corner is not counted),
+so the hook has $c+(n+2-2c-x)=n+2-c-x=L$ cells. The last hook has
+$1+(n-1-f)+1=L$ cells. In this second case~$\ell_x\le L$ as well: for
+$x=n-1$ we have $\ell_x=2=L$, and otherwise $2\ell_x\le n+2-x$, whereas
+$\ell_x\ge L+1$ and $\ell_x\ge c$ would give $2\ell_x\ge n+3-x$. Finally,
+$\ell_x\ge L+1=n+2-f$ if and only if $n+2-x\ge2(n+2-f)$, that is,
+$x\le f-L-1$.
+
+(d) For $f=n-1$ the corner column of hook~$x$ is $n-x$, which exceeds
+$\ell_x$ when $x\le n-3$; for the last two rows the definition also gives
+the whole row. So $M_{n-1}$ couples the horizontal edges, as in
+Proposition~\ref{prop:gamma}.
+\end{proof}
+
+Write $y(a,c)$ for the position of an alive cell, as given by part~(a).
+Two facts about it drive the next two lemmas: $y$ never decreases when we
+move from an alive cell to the alive cell below it or to its right, and it
+increases by exactly one from each cell of a hook to the next. (For the
+corner, $y=L$; its left neighbour has position~$L-1$, and the cell above it,
+$(n-2,2)$, also has position~$L$.)
+
+\subsection{No shortcuts}
+
+The graph has many edges that the hooks do not use, and some of them will
+be needed in later rounds. The next lemma shows that none of them
+creates a shorter augmenting path now.
+
+\begin{lemma}
+\label{lem:levels}
+In the matching $M_f$, the girl of an alive cell at position~$y$ of its
+hook is at distance $2(y-1)$ from the free girls, and its boy at distance
+$2y-1$. No retired vertex can be reached by an alternating path from a
+free girl. Consequently the dag has level~$L$, and its SAPs end at the
+free boys of hooks~$k,\ldots,f$.
+\end{lemma}
+
+\begin{proof}
+First, retired vertices. A retired boy~$b_{a,c}$ can be entered only from
+the girl to his right or the girl below him, since his own girl is his
+mate. Both lie in retired cells, being in column~$c$ or $c+1$, beyond
+column~$f$. (When $f=1$ the corner is alive and lies below the retired
+cell~$(n-2,2)$; this is one place where the omitted edge matters.) A
+retired girl can be entered only from her own boy. So no alternating path
+from a free girl ever reaches a retired vertex.
+
+Now follow an alternating path from a free girl. A step from a girl to a
+boy uses an edge outside $M_f$, which goes from cell~$(a,c)$ to the same
+cell, to $(a,c-1)$, or to $(a-1,c)$; by the monotonicity of positions it
+does not increase the position. A step from a boy to a girl uses a couple
+of $M_f$, and so increases the position by exactly one. The path starts
+at position~1, so a boy at position~$y$ is reached only after at least
+$y-1$ couples, that is, after at least $2y-1$ edges. The beginning of his
+own hook reaches him in exactly that many. The argument for girls is the
+same.
+
+Free boys are the last boys of the hooks, at positions $\max(\ell_x,L)\ge
+L$. The smallest distance to one of them is therefore $2L-1$, attained
+exactly by hooks~$k,\ldots,f$.
+\end{proof}
+
+\subsection{The forced search}
+
+Now the input order enters. Fig.~\ref{fig:straight} shows a dag of a
+staircase graph with each hook drawn as a straight row; the positions
+become the columns, which are exactly the levels of the dag.
+
+\begin{figure}[ht]
+\centering
+\input{figures/gen_straight}
+\caption{The dag of the round at level~$L=4$ of $\Gam_{10}$ (state~$f=7$),
+with the hooks straightened. Arrows are the arcs of $\A{BLINK}$, from a
+boy to a girl one level down: every boy has an arc to his own girl, and
+the boy at position~$y$ of hook~$x$ also has an arc to the girl below him
+when $x+y\le7$; that arc comes first in $\A{BLINK}$. Hooks~1 and~2 have
+more than $L$ cells (the shaded column lies beyond the dag). The search
+starts at the free boy of hook~3, the first hook with exactly $L$ cells,
+and always takes the first arc, so it goes down a staircase to the last
+free girl.}
+\label{fig:straight}
+\end{figure}
+
+\begin{lemma}
+\label{lem:bfs}
+Suppose a round starts with the matching $M_f$ and with the free girls in
+\A{QUEUE} in hook order. Then each level~$G_j$ of the dag is listed in hook
+order, and for the boy~$b$ at position~$y\le L$ of hook~$x$,
+\[
+  \A{BLINK}[b]=\begin{cases}
+   (\text{girl at position~$y$ of hook~$x+1$},\ \text{girl at position~$y$ of hook~$x$}),&\text{if } x+y\le f;\\
+   (\text{girl at position~$y$ of hook~$x$}),&\text{if } x+y>f.
+  \end{cases}
+\]
+The roots of the depth-first search are the free boys of hooks
+$k,k+1,\ldots,f$, in this order.
+\end{lemma}
+
+\begin{proof}
+Let $b=b_{a,c}$ lie at position~$y$ of hook~$x$. By
+Lemma~\ref{lem:levels}, the girls one level below $b$ are those at
+position~$y$. Of his three possible neighbours, his own girl qualifies;
+the girl to his right does not, since her position is larger; and the girl
+below him, $g_{a+1,c}$, if she is adjacent to him, qualifies exactly when
+the two cells have the same position. By the formula of
+Lemma~\ref{lem:hooks}(a) that means $a+c\le f$, with one exception: the
+corner has the same position as the cell above it, but the edge between
+them is the omitted one, which is the main reason for omitting it. When
+$a+c\le f$, then $(a,c)$ lies in the first part of hook~$a$, so $c=y\le L$,
+and $(a+1)+2c\le f+1+L=n+2$; hence cell~$(a+1,c)$ exists, and it is not the
+corner because $a+c\le f<n$. Also $(a,c)$ is at
+position~$c$ of hook~$a$, so $a+c\le f$ is the condition $x+y\le f$, and
+$g_{a+1,c}$ is at position~$y$ of hook~$x+1$.
+
+Now argue by induction on $j$ that $G_j$ is in hook order. For $j=0$ this
+is the hypothesis. When the girls of $G_j$ are scanned, the girl of hook
+$x$ meets at most three boys: her own boy; her left boy, whose position is
+smaller, so that he is already in the dag at a lower level and step~\Hs6
+ignores him; and her upper boy, whose position is at most hers. (On the
+vertical part of a hook her upper boy is her mate, at the level below.) The
+only girls of $G_j$ adjacent to her own boy are herself and the girl of
+hook~$x+1$, who comes later; so she is the one who discovers him. Thus $B_{j+1}$
+is discovered in hook order, and so is $G_{j+1}$, which consists of their
+mates. When the girl of hook~$x+1$ later meets the same boy as her upper
+boy, step~\Hs6 inserts her at the head of his list, which gives the stated
+order of $\A{BLINK}$.
+
+At level~$L$ the boys of hooks~$1,\ldots,k-1$ are matched and are
+discovered before the first free boy (in hook~$k$), so they enter the
+dag; the free boys of hooks~$k,\ldots,f$ follow in order and become the
+roots.
+\end{proof}
+
+\begin{lemma}
+\label{lem:dfs}
+Under the hypotheses of Lemma~\ref{lem:bfs}, the round finds exactly one
+SAP. Its free girl is the last girl in \A{QUEUE}, and afterwards the matching
+is $M_{f-1}$, with the remaining free girls still in hook order.
+\end{lemma}
+
+\begin{proof}
+Write $\langle x,y\rangle$ for position~$y$ of hook~$x$, and recall that hooks
+$k,\ldots,f$ have exactly $L$ cells and $f-k\le L$.
+
+\emph{The first root.} The search starts at the boy~$\langle k,L\rangle$ and always
+follows the first remaining arc. Suppose first that $f\ge L+1$, so that
+$k=f-L$ and $k+L=f$. Then the first arc leads to the girl~$\langle k+1,L\rangle$; her
+mate is the boy~$\langle k+1,L-1\rangle$, whose hook and position again add up to $f$,
+so the next arc leads to the girl~$\langle k+2,L-1\rangle$, and so on down the
+staircase
+\[
+   \text{boy }\langle i,f-i\rangle\ \to\ \text{girl }\langle i+1,f-i\rangle\ \db\ \text{boy }\langle i+1,f-i-1\rangle
+   \qquad(i=k,k+1,\ldots,f-1),
+\]
+ending at the girl~$\langle f,1\rangle$, who is free. If instead $f\le L$, then $k=1$,
+and the search first walks backwards along hook~1 (each boy~$\langle 1,y\rangle$ with
+$1+y>f$ has only his own girl) until it reaches the boy~$\langle 1,f-1\rangle$; from
+there it descends the same staircase. In both cases the SAP ends at the
+free girl of hook~$f$, the last girl in \A{QUEUE}, so step~\Hs{16} leaves the
+order of the others unchanged.
+
+\emph{The other roots fail.} The SAP passes through the girl~$\langle i,f+1-i\rangle$
+of every hook~$i$ with $k<i\le f$. The root $\langle i,L\rangle$ of such a hook has only
+one arc at each position~$y$ with $i+y>f$, namely to its own girl. Following
+these single arcs, it reaches the boy~$\langle i,f+1-i\rangle$, whose only girl has been
+deleted. Every list on the way is now empty, and step~\Hs{15} backs up all
+the way: the root fails. So the round has exactly one SAP.
+
+\emph{The new matching.} Augmenting dissolves, in each hook~$i$ with
+$k<i<f$, the couple between positions $f-i$ and $f+1-i$, and couples
+instead the boy at position~$f-i$ of hook~$i$ to the girl at position
+$f-i$ of hook~$i+1$, for $k\le i<f$. Reading along the new couples, the
+new hook~$i$ therefore consists of the first $f-i$ cells of the old hook
+$i$, followed by the cells of the old hook~$i+1$ from position~$f-i$ on;
+the remaining cells of the old hook~$i$ have passed to hook~$i-1$, and
+the old hook~$f$ has been absorbed into hook~$f-1$. When $f\le L$, the
+cells of hook~1 at positions $f,\ldots,L$, which the search walked
+through, become coupled to themselves, that is, retired. Now compare
+with the definition. In state~$f$, hook~$i+1$ has corner column~$f-i$, so
+the new hook~$i$ runs east along row~$i$ to column~$f-i$ and then south:
+it is hook~$i$ of state~$f-1$. The cells that retire are the alive cells
+of column~$f$ other than the corner (which stays alive when $f=2$). Hooks~$1,\ldots,k-1$ are untouched whole rows, and they
+are whole rows in state~$f-1$ too: for them $\ell_x\ge L+1=n+2-f$, so their
+new corner column satisfies $f-x\ge n+2-x-\ell_x\ge\ell_x$, and if equality
+holds then $x+2\ell_x=n+2$ and there is no cell below $(x,\ell_x)$. So the
+new matching is $M_{f-1}$. For $f=1$ the search walks back along the single
+hook and produces the perfect matching~$M_0$.
+\end{proof}
+
+Searched on its own, the root of each of the hooks~$k+1,\ldots,f$ would
+find a SAP along its own hook. But \A{MARKED} lists the roots in hook
+order, so the root of hook~$k$ goes first, and because the first arc of
+each \A{BLINK} list points one hook down, its path takes the girl at
+position~$f+1-i$ from every later hook~$i$. Each later root must pass
+through that girl, so it fails.
+
+\begin{lthm}{S}
+On the ordered graph $\Gam_n$, Algorithm~H performs exactly $n$ rounds.
+For $L=2,3,\ldots,n$, the round at level~$L$ starts with $f=n+1-L$ free
+girls and finds exactly one SAP. The final matching consists of the
+inside edges.
+\end{lthm}
+
+\begin{proof}
+By Proposition~\ref{prop:gamma} and Lemma~\ref{lem:hooks}(d), step~\Hs1
+produces $M_{n-1}$ with the free girls in hook order. Apply
+Lemmas~\ref{lem:levels}--\ref{lem:dfs} for $f=n-1,n-2,\ldots,1$.
+\end{proof}
+
+\paragraph{Every size.}
+Theorem~S gives $n$ rounds when $s=Q_n$. For $Q_n<s<Q_{n+1}$, append
+$p=s-Q_n$ new girl--boy pairs to $\Gam_n$, numbered after all the old
+ones. Give each new girl the list ``her own new boy, then the previous
+boy,'' where the previous boy is the corner boy~$b_{n-1,2}$ for the first
+new girl and the preceding new boy afterwards. Step~\Hs1 scans the new girls
+first and couples each to her own boy. No old girl's list mentions a new
+boy, so an alternating path from an old free girl never enters the new
+pairs: to do so it would have to arrive at a boy whose mate is a new
+girl. Hence every round runs exactly as on $\Gam_n$. The corner boy had
+degree one, so the new graph is still planar, connected, and of maximum
+degree three. For $s=1$ use a single edge, and for $s=0$ the empty
+graph. Together with Section~\ref{sec:upper}, this proves Theorem~R.
+\qed
+
+\subsection{How much one path blocks}
+
+In state~$f$ the hooks~$k,\ldots,f$ are $m=\min(f,L+1)$ disjoint SAPs, so
+the largest set of disjoint SAPs has $\nu=m$ members, while Algorithm~H
+takes one. The total number of SAPs in the dag grows exponentially in~$m$.
+
+\begin{proposition}
+In state~$f$, the dag of $\Gam_n$ contains exactly $2^m-1$ SAPs.
+\end{proposition}
+
+\begin{proof}
+Let $N(x,y)$ be the number of dag paths from the boy at position~$y$ of
+hook~$x$ down to $\bot$. By Lemma~\ref{lem:bfs},
+$N(x,y)=N(x,y-1)+\Iv{x+y\le f}\,N(x+1,y-1)$, where $N(x,0)=1$ stands
+for the free girl. Induction on $y$ gives $N(x,y)=2^{\min(y,f-x)}$. A root
+$\langle i,L\rangle$ with $k\le i\le f$ therefore starts $2^{f-i}$ SAPs, since $f-i\le
+f-k\le L$, and $\sum_{i=k}^{f}2^{f-i}=2^m-1$.
+\end{proof}
+
+Every SAP from the root of hook~$i>k$ passes through the girl at position
+$f+1-i$ of that hook, which the first SAP uses. So the one SAP found by
+Algorithm~H meets all $2^m-1$ SAPs, including all $m$ disjoint ones.
+Lemma~\ref{lem:15ab}(b) with $\nu=m\le L+1$ in place of $f$ predicts at
+least one SAP, and one is what Algorithm~H finds.
+
+\subsection{Counting the work}
+\label{sec:work}
+
+\begin{lthm}{W}
+In the round of $\Gam_n$ with $f$ free girls and level~$L=n+1-f$, with
+$m=\min(f,L+1)$ as above,
+\[
+   W_5=3fL-n-\min(f,L),\qquad W_{13}=mL-\binom{m-1}{2},\qquad W_{11}=fL.
+\]
+Summed over all rounds after~\Hs1,
+\[
+  \sum W_5=\frac{(n-1)n(n+2)}2-Q_n+1,\qquad \sum W_{11}=\frac{(n-1)n(n+4)}6,
+\]
+\[
+  \sum W_{13}=\begin{cases}(4u^3+21u^2+23u-6)/6,& n=2u+1,\\
+                 (4u^3+15u^2+5u-12)/6,& n=2u.\end{cases}
+\]
+The final, unsuccessful search examines no edges.
+\end{lthm}
+
+\begin{proof}
+The breadth-first search scans the girls at positions $1,\ldots,L$ of all
+$f$ hooks, $fL$ girls in all, and every list entry of each. A girl has
+three neighbours except that girls in column~1 have no left boy, girls in
+row~1 have no upper boy, and the corner girl lacks the omitted edge. The
+scanned girls include all $n-1$ girls of column~1, exactly $\min(f,L)$
+girls of row~1, and the corner girl; this gives $W_5$. The dag contains
+all $fL$ boys at positions $\le L$, by the last paragraph of the proof of
+Lemma~\ref{lem:bfs}, so $W_{11}=fL$. The first root consumes $L$ arcs. The
+root of hook~$k+h$, $1\le h<m$, consumes the arcs at positions
+$L,L-1,\ldots,m-h$, including the one to a deleted girl: $L-m+h+1$
+arcs. Adding up gives $W_{13}$, and summing over $f=1,\ldots,n-1$ gives the
+totals (the sum $\sum_f\min(f,n+1-f)$ equals $Q_n-1$).
+\end{proof}
+
+For $\Gam_5$ the totals are $\sum W_5=62$, $\sum W_{13}=26$, $\sum W_{11}=30$, in agreement with the
+table of Section~\ref{sec:watch}. As $n\to\infty$ we have $\sum W_5\sim n^3/2$,
+$E\sim3n^2/4$, and $V=2Q_n\sim n^2/2$, so
+\[
+   \frac{\sum W_5}{E\sqrt V}\ \longrightarrow\ \frac{2\sqrt2}{3}\approx0.943 .
+\]
+Thus the breadth-first searches alone examine $\Theta(E\sqrt V)$
+adjacency entries, and Corollary~K is tight up to a constant factor,
+even for connected planar graphs of maximum degree three. The padding
+used for other sizes adds only $O(n)$ edges and does not change this.

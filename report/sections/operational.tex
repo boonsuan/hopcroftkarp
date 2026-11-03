@@ -1,0 +1,413 @@
+\section{The operational question}
+\label{sec:operational}
+
+Can every $s$ be given an ordered graph that realizes the Tchoukaillon
+schedule, with no condition on the paths? This is exercise~16 under the
+operational reading, and it is open. This section collects what we know:
+explicit examples for small $s$, an example showing that the operational
+and basic-row readings differ, structural consequences of the
+schedule's first rounds, and two obstructions that come from the input
+order.
+
+\subsection{Small sizes}
+\label{sec:catalog}
+
+An earlier computer search found ordered graphs realizing the schedule for
+every even $s\le40$; by the next proposition this covers every $s\le41$.
+The search itself is not part of the accompanying programs, but the inputs
+it found are (Appendix~\ref{app:catalog}). It extended one fixed ordered
+graph step by step, rerunning the whole execution after each proposed
+extension and rejecting any extension that changed an earlier round, so it
+was not guaranteed to succeed, and it proves nothing about larger~$s$. We
+have replayed every example from \Hs1 with two independent implementations
+of Algorithm~H and checked its final matching with a separate
+maximum-matching program (Appendix~\ref{app:code}). A max-flow computation
+of $\nu$ in every round shows that all these examples are in fact basic-row
+realizations.
+
+\begin{proposition}
+\label{prop:odd}
+A realization for $s=2h$ yields one for $s=2h+1$: add an isolated
+girl--boy edge, numbered after all other vertices. The new realization is
+basic-row if the old one is.
+\end{proposition}
+
+\begin{proof}
+\Hs1 matches the new edge first, no search ever reaches it, and
+$\floor{2h/2}=\floor{(2h+1)/2}$, so the schedule is unchanged.
+\end{proof}
+
+\subsection{Operational is weaker than basic-row}
+\label{sec:no-cover}
+
+The matrices of answer~15(d) keep $\nu=f$ in every round
+(property~$\Bp$). The schedule does not require this. Take $s=8$ and the
+ordered lists
+\begin{equation}
+  [5,7];\ [3,5];\ [3];\ [1];\ [1,2];\ [3,4];\ [5,2,6];\ [7,8].
+  \label{eq:tree8}
+\end{equation}
+The graph is a tree with 15 edges (Fig.~\ref{fig:tree8}). Step~\Hs1 leaves
+girls~$4,3,2,1$ free, and the run is
+\begin{center}\small
+\begin{tabular}{crrrrr}
+\toprule
+$L$&$f$&SAPs&$W_5$&$W_{13}$&$W_{11}$\\
+\midrule
+2&4&2&15&7&8\\
+3&2&1&11&3&5\\
+4&1&1&7&4&4\\
+\bottomrule
+\end{tabular}
+\end{center}
+which is the schedule $4\to2\to1\to0$. After the round at level~2 (round~2
+of the run), the free girls are $g_3,g_4$ and the free boys~$b_6,b_8$, and
+there are exactly three augmenting paths,
+\begin{align*}
+ &g_4\sg b_1\db g_5\sg b_2\db g_7\sg b_6 &&(\text{level }3),\\
+ &g_3\sg b_3\db g_2\sg b_5\db g_1\sg b_7\db g_8\sg b_8 &&(\text{level }4),\\
+ &g_4\sg b_1\db g_5\sg b_2\db g_7\sg b_5\db g_1\sg b_7\db g_8\sg b_8 &&(\text{level }5).
+\end{align*}
+(In a tree there is at most one path between two vertices, so one only
+has to check the four pairs of a free girl and a free boy.) So with two
+free girls there is only one SAP, $\nu=1<f$, and property~$\Bp$ fails for
+every choice of perfect matching. An operational realization need not be
+basic-row, and a search restricted to Knuth-style matrices could miss
+solutions.
+
+\begin{figure}[ht]
+\centering
+\input{figures/gen_tree8}
+\caption{An operational realization for $s=8$ that is not basic-row,
+labelled by the numbers of~\eqref{eq:tree8}. Top: the matching after~\Hs1
+and the two SAPs of the round at level~2. Bottom: the next matching. Its
+only SAP is shaded orange; the faint blue path is the augmenting path of
+level~4. (The third augmenting path, of level~5, is not drawn.)}
+\label{fig:tree8}
+\end{figure}
+
+\subsection{The shape forced by the first matching}
+\label{sec:blocks}
+
+For even $s=2h$ the schedule asks~\Hs1 to leave $h$ girls free, so~\Hs1 must
+produce a maximal matching with only $h$ couples, the fewest possible. The
+next proposition describes what that implies for the graph, whatever the
+input order. Write $G^\circ$ and $G^\bullet$ for the girls who are free and
+matched after~\Hs1, and $B^\bullet$ and $B^\circ$ for the boys who are
+matched and free after~\Hs1.
+
+\begin{proposition}
+\label{prop:blocks}
+Suppose $s=M=N=2h$ and~\Hs1 leaves $h$ girls free. Then:
+\begin{enumerate}[label=(\alph*)]
+\item there are no edges between $G^\circ$ and $B^\circ$, so the biadjacency
+  matrix has the block form of Fig.~\ref{fig:blocks};
+\item every perfect matching pairs $G^\circ$ with $B^\bullet$ and $G^\bullet$
+  with $B^\circ$;
+\item whenever $f$ girls are free later on, exactly $f$ couples join
+  $G^\bullet$ to $B^\bullet$, and $h-f$ couples are of each of the types
+  $G^\circ$--$B^\bullet$ and $G^\bullet$--$B^\circ$;
+\item relative to any perfect matching, every basic path contains exactly
+  one couple of type $G^\bullet$--$B^\bullet$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) is maximality of the matching from~\Hs1. For (b), the $h$ girls of
+$G^\circ$ can only be matched into the $h$ boys of $B^\bullet$, which leaves
+$B^\circ$ for $G^\bullet$. (c) Vertices never become free again once
+matched, so $G^\bullet$ and $B^\bullet$ stay covered. If $x,y,z$ count the
+current couples of types $G^\circ$--$B^\bullet$, $G^\bullet$--$B^\bullet$,
+$G^\bullet$--$B^\circ$, then $x+y=|B^\bullet|=h$, $y+z=|G^\bullet|=h$, and
+$x+y+z=2h-f$; hence $y=f$. (d) A basic path starts at a free girl in
+$G^\circ$ and ends at a free boy in $B^\circ$. Its perfect-matching edges
+stay within $G^\circ\cup B^\bullet$ or within $G^\bullet\cup B^\circ$
+by~(b), its couples of the two mixed types do too, and a couple of type
+$G^\bullet$--$B^\bullet$ is the only way to pass from the first part to the
+second; by~(a) there is no way back.
+\end{proof}
+
+\begin{figure}[ht]
+\centering
+\input{figures/blocks}
+\caption{After a minimum-size~\Hs1 matching no free girl is adjacent to a
+free boy: the biadjacency matrix has a zero block.}
+\label{fig:blocks}
+\end{figure}
+
+In terms of Knuth's matrices, each row consists of some indices of
+initially free girls followed by some indices of initially matched girls.
+For the 16-pair example this is the remark at the end of answer~15(d):
+an edge $b_{\rm even}\sg g_{\rm odd}$ would join a free girl to a free boy
+of the first matching.
+
+\subsection{Realizations need cycles}
+
+The trees of Section~\ref{sec:sparse} already force Algorithm~H to do
+$\Theta(E\sqrt V)$ work. No forest, however, can realize the schedule for
+large $s$: its first two rounds force many independent cycles. The
+argument uses only the prescribed numbers of SAPs in those rounds, so it
+applies to any algorithm that removes a maximal set of disjoint SAPs per
+round, in any order.
+
+\begin{lthm}{C}
+Let an ordered graph with $s=M=N=2h>0$ realize the Tchoukaillon schedule.
+Let $a_2=\ceil{h/3}$ and $a_3=\ceil{(h-a_2)/4}$ be the numbers of SAPs in
+its rounds at levels~2 and~3, and let $p=3a_2-h\in\{0,1,2\}$. Then
+\[
+   E\ \ge\ 3h+4a_2-8p-a_3 .
+\]
+Consequently the cycle rank $\beta=E-V+\kappa$, where $\kappa$ is the number
+of connected components, satisfies $\beta\ge a_2-a_3-7p+1\ge\ceil{(h-76)/6}$.
+In particular the graph is not a forest if $h\ge77$, or if $3\mid h$; and for
+large $s$,
+\[
+   E\ge\tfrac{25}{12}\,s-O(1),\qquad \beta\ge\tfrac1{12}\,s-O(1).
+\]
+\end{lthm}
+
+\begin{proof}
+Fix a perfect matching $P$ and let $M_1$ be the matching produced by~\Hs1.
+
+\emph{Basic paths after~\Hs1.} The $2h$ endpoints of $M_1$ must touch all
+$2h$ edges of $P$, by maximality, so each edge of $P$ has exactly one
+matched endpoint. Hence $P\cup M_1$ is a disjoint union of $h$ basic paths
+of level~2, each of the form $u\sg v\db w\sg z$ with $u\in G^\circ$, $v\in
+B^\bullet$, $w\in G^\bullet$, $z\in B^\circ$; together they cover all
+vertices and use $3h$ edges.
+
+\emph{Good triples.} A SAP of the first dag round also has the form
+$u\sg v\db w\sg z$, and it meets at most three basic paths: the one
+containing~$u$, the one containing the couple $v\db w$, and the one
+containing~$z$. The round selects $a_2$ SAPs, and by maximality they meet
+all $h$ basic paths. Call a selected SAP \emph{good} if it meets three basic
+paths that no other selected SAP meets. If $q_1,\ldots,q_{a_2}$ are the
+numbers of basic paths met by the selected SAPs, put
+$\delta=3a_2-\sum q_i\ge0$ and $\omega=\sum q_i-h\ge0$, so that
+$\delta+\omega=p$. At most $\delta$ selected SAPs meet fewer than three
+paths; and a basic path met by $k\ge2$ selected SAPs contributes $k-1$ to
+$\omega$ and involves at most $k\le2(k-1)$ of them. So the number $g$ of
+good SAPs satisfies $g\ge a_2-2p$.
+
+\emph{What a good triple becomes.} Number the three basic paths met by a good
+SAP as $u_k\sg v_k\db w_k\sg z_k$ ($k=1,2,3$), so that the SAP is
+$u_1\sg v_2\db w_2\sg z_3$. After augmenting, the six pairs of the triple
+form two basic paths of level~3 (Fig.~\ref{fig:goodtriple}):
+\[
+  u_2\sg v_2\db u_1\sg v_1\db w_1\sg z_1\qquad\text{and}\qquad
+  u_3\sg v_3\db w_3\sg z_3\db w_2\sg z_2 .
+\]
+These are SAPs of the round at level~3, and their vertices lie in the dag
+at the levels given by their positions (a shorter route to one of them,
+followed by the rest of the path, would contain an augmenting path of
+level~2, and there is none after the first dag round). The triple contains
+$9+2=11$ edges of $P\cup M_1$ and of the selected SAP: the ten edges of the
+two new paths, and the old couple $v_2w_2$. That edge joins the girl~$w_2$,
+at position~3 of the second path, to the boy~$v_2$, at position~1 of the
+first, so it points backwards and is not an arc of the level-3 dag.
+
+\emph{The second round.} Let $F$ be the set of edges outside $P\cup M_1$ and
+outside the $2g$ selected edges of good triples; $|F|=E-3h-2g$. In the
+level-3 dag with $F$ removed, each new path of a good triple is cut off
+from everything else: edges of $P\cup M_1$ never leave their triple, the
+selected edges stay inside it, and the only remaining edge between the two
+new paths is not an arc. So a SAP that meets $q$ of these $2g$ paths uses at
+least $q-1$ edges of~$F$. The round at level~3 selects $a_3$ vertex-disjoint
+SAPs, which must meet all $2g$ new paths of good triples. Therefore
+$2g-a_3\le|F|=E-3h-2g$, and $E\ge3h+4g-a_3\ge3h+4a_2-8p-a_3$.
+
+(When $h=1$ there is no second round, $a_3=0$, and the bound is trivial.)
+The bound on $\beta$ follows from $V=4h$, $\kappa\ge1$, and $h=3a_2-p$; the
+explicit form comes from substituting $a_3=\ceil{(2a_2-p)/4}$ and checking
+$p=0,1,2$, the weakest case being $p=2$ with $a_2$ even. For $p=0$ one gets
+$\beta\ge\floor{a_2/2}+1>0$. The asymptotic statements follow from
+$a_2=h/3+O(1)$ and $a_3=h/6+O(1)$.
+\end{proof}
+
+\begin{figure}[ht]
+\centering
+\input{figures/goodtriple}
+\caption{A good triple in the proof of Theorem~C. Single lines are edges of
+the perfect matching $P$, double lines are couples. One SAP of the first
+dag round (shaded) meets three basic paths; afterwards their six pairs form
+two basic paths of level~3. The old couple $v_2w_2$ runs from position~3
+back to position~1, so the level-3 dag cannot use it, and any SAP that
+visits both new paths must use some other edge.}
+\label{fig:goodtriple}
+\end{figure}
+
+\begin{remark}
+For odd $s=2h+1$ the same method should give
+$E\ge3h+4a_2-8p-a_3-6$ and $\beta\ge\ceil{(h-124)/6}$, so that no forest
+realizes the schedule when $s\ge251$. In outline: \Hs1 now leaves $h$ girls
+free, and either all $h$ basic paths have level~2 and one couple of $M_1$
+belongs to $P$, or one basic path has level~3 and the others level~2. We
+have not written out the second case in full (one must check that SAPs
+touching the long basic path do not spoil the isolation argument), so we
+state this only as a remark.
+\end{remark}
+
+The case~$p=0$ also shows how property~$\Up$ fails in such a realization.
+
+\begin{corollary}
+If a realization has $6\mid s$, then just after its first dag round the
+SAPs have level~3 (five edges), and there is also an augmenting path with
+at least nine edges.
+\end{corollary}
+
+\begin{proof}
+With $p=0$ all $a_2$ selected SAPs are good, so no basic path is left
+untouched, and the $2a_2$ new basic paths are disjoint SAPs of level~3,
+each meeting a selected SAP. Apply Proposition~\ref{prop:longpaths} with
+$q=2a_2$ and $a=a_2$.
+\end{proof}
+
+\subsection{The input order matters}
+\label{sec:order}
+
+One plan for the operational question is to find a graph with the right
+sequence of maximal SAP sets, and then look for an input order that makes
+Algorithm~H pick those sets. The plan can fail, because Algorithm~H does
+not choose its maximal sets freely: which SAP it finds depends on the
+order in \A{QUEUE}, on head insertion in step~\Hs6, and on the replacement
+rule of step~\Hs{16}.
+
+\paragraph{A six-pair graph.}
+Let the girls~$g_1,\ldots,g_6$ have the neighbour sets
+\[
+  \{b_1\};\quad\{b_1,b_2,b_5\};\quad\{b_3\};\quad\{b_2,b_3,b_4\};\quad\{b_3,b_5\};\quad\{b_5,b_6\}.
+\]
+The edges $g_kb_k$ form a perfect matching. Starting from the matching
+$b_1g_2$, $b_3g_4$, $b_5g_6$, the three augmentations
+\begin{gather*}
+  g_5\sg b_3\db g_4\sg b_2,\qquad
+  g_1\sg b_1\db g_2\sg b_5\db g_6\sg b_6,\\
+  g_3\sg b_3\db g_5\sg b_5\db g_2\sg b_2\db g_4\sg b_4
+\end{gather*}
+are SAPs at levels~2, 3, 4, and after each of them no SAP of the same level
+remains. So the schedule for $s=6$, which removes one SAP at each of these
+levels, is consistent with this graph.
+
+\begin{proposition}
+No numbering and no list order make Algorithm~H follow this schedule on
+this graph.
+\end{proposition}
+
+\begin{proof}
+A maximal matching with three couples must have exactly one endpoint on
+each edge $g_kb_k$ and contain none of them; the only such matching is
+$b_1g_2$, $b_3g_4$, $b_5g_6$, so~\Hs1 must produce it, with free girls
+$g_1,g_3,g_5$. One SAP can be a maximal set only if it meets all three
+basic paths, and the only such SAP is $g_5\sg b_3\db g_4\sg b_2$. Before
+the first augmentation every root of the search succeeds, so this must be
+the SAP found from the first root, $b_2$, by taking the first arc of each
+list. Head insertion at $b_3$ then requires $g_3$ to precede $g_5$ in
+\A{QUEUE}, and head insertion at $b_2$ requires $g_2$ to precede $g_4$ at
+level~1. Girl~$g_2$ is queued when $g_1$ discovers $b_1$, and $g_4$ when the
+earlier of $g_3,g_5$ discovers $b_3$; so $g_1$ comes first, and the queue
+must be $(g_1,g_3,g_5)$. Step~\Hs{16} then removes the last girl, $g_5$,
+leaving $(g_1,g_3)$. In the next dag, level~1 is $(g_2,g_5)$, both adjacent
+to $b_5$, so $\A{BLINK}[b_5]=(g_5,g_2)$ whatever the lists. Whichever of the
+free boys~$b_4,b_6$ is searched first finds one of the basic paths
+$g_1\sg b_1\db g_2\sg b_2\db g_4\sg b_4$ or $g_3\sg b_3\db g_5\sg b_5\db
+g_6\sg b_6$; they are disjoint, so the other is found as well, and the round
+removes two SAPs instead of one.
+\end{proof}
+
+An exhaustive check of all $6!\,(3!)^2(2!)^2=103680$ girl numberings and
+list orders (the boy numbering plays no role) agrees: 740 of them give a
+three-couple~\Hs1 matching, and none of those follows the schedule. Other
+six-pair graphs do realize it (Appendix~\ref{app:catalog}).
+
+\paragraph{Triangular chain graphs.}
+Let $\Delta_{2h}$ have girls and boys~$1,\ldots,2h$, with $g_j\sg b_i$ an
+edge whenever $i\le j$. Hegerfeld and Kratsch show that chain graphs of
+this kind can need many phases when the maximal sets are chosen
+adversarially~\cite[Section~5.3]{HegerfeldKratsch}. With Algorithm~H and a
+minimum-size first matching, the order of the search rules out the
+Tchoukaillon schedule whenever $3\mid h$:
+
+\begin{proposition}
+\label{prop:chain}
+Give $\Delta_{2h}$ any numbering and any list order. If~\Hs1 leaves $h$ girls
+free and the first dag round finds $a$ SAPs, then $3a>h$. So when $3\mid h$,
+the graph $\Delta_{2h}$ cannot realize the schedule, whose first round would
+remove exactly $h/3$ SAPs.
+\end{proposition}
+
+\begin{proof}
+As in the previous proof, each edge $g_kb_k$ has exactly one matched
+endpoint. Let $T$ be the set of $k$ with $g_k$ free (so $b_k$ is matched)
+and $S$ its complement (so $b_k$ is free). Maximality forbids an edge from a
+free girl~$g_t$ to a free boy~$b_u$; since $g_tb_u$ is an edge when $u\le
+t$, we must have $u>t$ for all $t\in T$ and $u\in S$. Hence
+$T=\{1,\ldots,h\}$ and $S=\{h+1,\ldots,2h\}$. Write $u_i=g_i$, $v_i=b_i$,
+$x_j=g_{h+j}$, $z_j=b_{h+j}$ for $1\le i,j\le h$; the matching from~\Hs1 is
+$x_j\db v_{\pi(j)}$ for a permutation~$\pi$, and the SAPs are exactly the
+paths
+\[
+   u_i\sg v_{\pi(j)}\db x_j\sg z_d\qquad\text{with }\pi(j)\le i\text{ and }d\le j .
+\]
+Suppose $a<h$ SAPs are selected, let $i_0$ be the largest index of an
+unselected free girl and $d_0$ the smallest index of an unselected free boy.
+An unselected $x_j$ with $\pi(j)\le i_0$ and $j\ge d_0$ would give a SAP
+disjoint from the selected ones; so each of the $h-a$ unselected $x_j$ has
+$\pi(j)>i_0$ or $j<d_0$. At most $h-i_0\le a$ of them satisfy the first
+condition and at most $d_0-1\le a$ the second; hence $h\le3a$.
+
+Suppose $h=3a$. Then all these inequalities are equalities: the selected
+free girls are $u_{2a+1},\ldots,u_{3a}$, the selected free boys are
+$z_1,\ldots,z_a$, every selected $x_j$ has $\pi(j)\le2a$ and $j>a$, and
+every $x_j$ with $\pi(j)>2a$ is unselected and has $j>a$. Girl~$u_{2a}$ is
+never selected. Each selected SAP passes through a boy~$v_{\pi(j)}$ with
+$\pi(j)\le2a$, whose list contains $u_{2a}$; that arc cannot have been
+consumed earlier, because following it would have produced a SAP ending at
+$u_{2a}$. Since lists are in reverse queue order, every selected free girl
+comes after $u_{2a}$ in \A{QUEUE}. Only the selected free girls are adjacent
+to the boys~$v_{2a+1},\ldots,v_{3a}$, while $u_{2a}$ is adjacent to all of
+$v_1,\ldots,v_{2a}$; so the latter are all discovered first, and their
+mates come first in level~1. In particular every $x_j$ with $\pi(j)>2a$ is
+queued after every selected $x_j$. Now consider the first root of the
+search. Before any augmentation every root succeeds, so it is a selected
+free boy~$z_d$ with $d\le a$. All $x_j$ with $\pi(j)>2a$ are adjacent to it
+(since $j>a\ge d$) and come later in the queue, so the head of
+$\A{BLINK}[z_d]$ is not a selected girl; and the search from it succeeds.
+So the first SAP found uses an $x_j$ that should have remained unselected,
+a contradiction.
+\end{proof}
+
+For $h=3$ the schedule is consistent with the graph itself: starting from
+the matching $x_1v_1$, $x_2v_3$, $x_3v_2$, the graph $\Delta_6$ admits the
+single maximal SAPs
+\begin{gather*}
+  u_3\sg v_2\db x_3\sg z_1,\qquad
+  u_1\sg v_1\db x_1\sg z_1\db x_3\sg z_2,\\
+  u_2\sg v_2\db u_3\sg v_3\db x_2\sg z_2\db x_3\sg z_3
+\end{gather*}
+at levels~$2,3,4$. It is the order of Algorithm~H's search that rules them
+out. Other graphs with $s=6$ do realize the schedule.
+
+\subsection{What an induction would need}
+
+One might try to pass from $s=2h$ to $s=2h+2$ by adding two pairs. The
+schedule changes in a very controlled way. Write $f_L(h)$ and $a_L(h)$ for
+the schedule with $f_2(h)=h$, extended by zeros.
+
+\begin{lemma}
+Let $K$ be the first level~$L\ge2$ such that $L+1$ divides $f_L(h)$. Then
+$f_L(h+1)=f_L(h)+1$ for $2\le L\le K$ and $f_L(h+1)=f_L(h)$ for $L>K$; so
+$a_L(h+1)=a_L(h)+\Iv{L=K}$.
+\end{lemma}
+
+\begin{proof}
+The map $x\mapsto x-\ceil{x/(L+1)}$ increases by $1$ from $x$ to $x+1$,
+except when $(L+1)\mid x$, where it stays the same. Start from a difference
+of $1$ at level~2 and follow it.
+\end{proof}
+
+So adding two pairs should add one free girl, keep every count of SAPs
+except one extra at level~$K$, and then rejoin the old schedule. Doing this
+with a fixed set of edges, while preserving every earlier distance and
+every earlier \A{BLINK} order, is what we have not managed: an edge added
+for a later round can create a shorter path in an earlier one, or change
+the order in which an earlier search discovers vertices.
