@@ -1,7 +1,7 @@
 \section{Computed realizations for small sizes}
 \label{app:catalog}
 
-For every even $s=2h\le40$ the search described in
+For every even $s=2h\le40$ the earlier search described in
 Section~\ref{sec:catalog} found an ordered graph that realizes the
 Tchoukaillon schedule; by Proposition~\ref{prop:odd} this covers all
 $s\le41$. In each example~\Hs1 produces the matching
@@ -43,3 +43,22 @@ $s$&$E$&rounds&\Hs1&$W_5$&$W_{13}$&$W_{11}$&SAPs removed\\
 \bottomrule
 \end{tabular}
 \end{center}
+
+The program \texttt{search.py} of Section~\ref{sec:catalog} finds different
+realizations for every even $s\le46$. They have the same matching
+after~\Hs1 and the same order of the free girls, and their ordered lists are
+in the file \texttt{code/data/search\_results.json}. Those beyond the table
+above are
+\begin{center}\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{rrrrrrrl}
+\toprule
+$s$&$E$&rounds&\Hs1&$W_5$&$W_{13}$&$W_{11}$&SAPs removed\\
+\midrule
+42&121&11&65&1138&290&394&$7,4,2,2,1,1,1,1,1,1$\\
+44&121&11&67&1092&290&393&$8,4,2,2,1,1,1,1,1,1$\\
+46&127&11&71&1123&298&408&$8,4,3,2,1,1,1,1,1,1$\\
+\bottomrule
+\end{tabular}
+\end{center}
+and by Proposition~\ref{prop:odd} they cover every $s\le47$.

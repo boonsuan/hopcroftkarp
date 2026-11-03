@@ -24,6 +24,7 @@ Run everything from this directory:
 | `python export_traces.py` | rewrites the golden traces in `../site/tests/golden/` | under 1 s |
 | `python algorithm_h.py gamma 5` | prints the rounds of a run, as in the tables of the notes | instant |
 | `python examples.py knuth16` | prints the girl lists of an example | instant |
+| `python search.py 46` | searches for Tchoukaillon realizations, every even s ≤ 46, and rewrites `data/search_results.json` (see [Search](#search)) | about 2 min |
 
 `python verify.py --list` lists the checks; `--only NAME ...` runs some of
 them. Every script takes `--help`.
@@ -45,7 +46,9 @@ python -c "from algorithm_h import run_h, format_run; print(format_run(run_h([[1
 | `verify.py` | The single entry point for checking. |
 | `make_figures.py` | Draws the figures `gen_*.tex` and the plot data `gen_*.dat` from actual runs. |
 | `export_traces.py` | Writes golden traces for testing a port of the simulator. |
+| `search.py` | A search for ordered graphs that realize the Tchoukaillon schedule (below). |
 | `data/numerical_witnesses.json` | The ordered graphs of Appendix C, for even s = 2, 4, …, 40. |
+| `data/search_results.json` | The graphs found by `python search.py 46`, for even s = 2, 4, …, 46, with numbers of their runs. |
 
 ## Conventions
 
@@ -88,9 +91,9 @@ These match the notes, and are the same in all files.
 | `triangular_chain(h)` | the triangular chain graph Δ_2h | Section 8.5 |
 | `load_catalog()`, `catalog_realization(s)` | the computed realizations for s ≤ 41 | Section 8.1, App. C |
 
-The catalog file stores only the ordered graphs. The notes say that a search
-program found them (Section 8.1). That program is not part of this repository:
-the files here store the inputs and replay them, and do not search.
+The catalog file stores only the ordered graphs; the program that found them
+(Section 8.1) is not included. `search.py`, below, is a new search that finds
+other realizations of the same schedule, for every even s ≤ 46.
 
 ## What `verify.py` checks
 
@@ -109,12 +112,52 @@ theorem).
 | `halving` | Appendix B: the lists, the free girls after each round, step H16, the work counts, property U (all augmenting paths of one level) for f ≤ 32; Corollary L |
 | `catalog` | Section 8.1 and Appendix C: every s ≤ 41 follows the Tchoukaillon schedule (Proposition 8.1 for odd s); every number of the table; the H1 matching; Theorem C's inequality |
 | `basic-rows` | Section 8.1: ν = f in every round of every catalog entry (max flow) |
+| `search` | Section 8.1: `search.py` finds realizations for s = 2, 4, …, 12 within 10 s each; every graph in `data/search_results.json` follows the schedule, is basic-row and satisfies Theorem C's inequality |
 | `tree8` | Section 8.2: the table, the three augmenting paths, ν = 1 < f = 2 |
 | `six-pair` | Section 8.5: the unique three-couple maximal matching, the abstract schedule, and no input follows it. A random sample of 5000 of the 103680 inputs by default; all of them, with the counts 103680 and 740, with `--exhaustive` or `--full` |
 | `chain` | Section 8.5: the abstract SAPs of Δ_6, and 3a > h (Proposition 8.6) on random inputs with h ≤ 6 |
 | `caterpillar` | Proposition 9.1 and Remark 9.2, for K = 2…16 and 32 |
 | `simulators` | Appendix D: the simulators agree on 502 random ordered graphs |
 | `maximum` | Appendix D: on all 689 simple graphs with M, N ≤ 3, each dag's level is the level of the shortest augmenting paths, found by exhaustive search, and the result is maximum |
+
+## Search
+
+`search.py` looks for ordered graphs on which Algorithm H follows the
+Tchoukaillon schedule (Section 3.2): s = M = N = 2h, step H1 leaves h girls
+free, and the round at each level L = 2, 3, … removes exactly
+a_L = ⌈f_L/(L+1)⌉ SAPs. Odd s need no search (Proposition 8.1).
+
+```
+python search.py 40                 # every even s <= 40
+python search.py 30 46              # every even s from 30 to 46
+python search.py 40 --seed 7 --time-limit 300
+```
+
+It prints one line per size (edges, rounds, restarts, reruns of Algorithm H,
+whether the run is basic-row, seconds, SAPs per round) and writes the graphs to
+`data/search_results.json`, in the format of the catalog file plus the numbers
+of the run. It never writes `numerical_witnesses.json`.
+
+The method, described in full in the module docstring, splices Knuth's rows
+(answer 15(d), Section 3.3). It starts from the normal form of Appendix C,
+whose h rows of two cells are disjoint, and designs one round at a time: the
+rows are split into a_L groups of at most L + 1 rows, and for each group it
+adds the "jump" edges of one SAP that merges them, placed in the lists so that
+the breadth-first search is unchanged and the depth-first search takes the
+jumps first, plus a reordering edge where the processing order is wrong. Each
+group is accepted only after Algorithm H has been rerun from H1 on the whole
+graph and every earlier round has found the same SAPs as before. The search
+backtracks over levels, restarts with a new numbering of the free girls when
+it is stuck, and is deterministic for a given `--seed`.
+
+Every graph it reports is replayed by both simulators, follows the schedule
+exactly and ends with a perfect matching; all of them are basic-row
+(ν = f in every round, by max flow). On a laptop, `python search.py 40` takes
+about 16 s with the default seed (s = 34 is the slowest size, about 10 s).
+`python search.py 42 60` finds 42, 44 and 46 (13–53 s each) and 54 and 56,
+but not 48, 50, 52, 58 or 60 within the default limit of 120 s per size; at 48, 50
+and 52 one level has a single group of exactly L + 1 rows, which forces every
+cut. Not finding a size says nothing about whether it can be realized.
 
 ## Golden traces
 

@@ -13,13 +13,24 @@ order.
 \label{sec:catalog}
 
 An earlier computer search found ordered graphs realizing the schedule for
-every even $s\le40$; by the next proposition this covers every $s\le41$.
-The search itself is not part of the accompanying programs, but the inputs
-it found are (Appendix~\ref{app:catalog}). It extended one fixed ordered
-graph step by step, rerunning the whole execution after each proposed
-extension and rejecting any extension that changed an earlier round, so it
-was not guaranteed to succeed, and it proves nothing about larger~$s$. We
-have replayed every example from \Hs1 with two independent implementations
+every even $s\le40$ (Appendix~\ref{app:catalog}). It extended one fixed
+ordered graph step by step, rerunning the whole execution after each
+proposed extension and rejecting any extension that changed an earlier
+round. Its program is not among the accompanying programs, but the inputs
+it found are. The program \texttt{search.py} (Appendix~\ref{app:code}) is a
+new search of the same kind. It finds other graphs, for every even
+$s\le46$, so by the next proposition the schedule can be realized for every
+$s\le47$. It starts from the normal form of Appendix~\ref{app:catalog} and
+designs one round at a time, in the manner of Knuth's matrices
+(answer~15(d)): at level~$L$ it splits the rows into groups of at most
+$L+1$, and for each group it adds the edges of one SAP that merges the
+group's rows, placed in the lists so that Algorithm~H should find exactly
+that SAP. After each proposed group it reruns the whole execution
+from~\Hs1, and it rejects the group if an earlier round changes or the
+planned SAPs are not found. Neither search is guaranteed to succeed
+(\texttt{search.py} finds nothing for $s=48$, 50, or~52 in two minutes
+each), and neither proves anything about larger~$s$. We have replayed every
+example from both searches from \Hs1 with two independent implementations
 of Algorithm~H and checked its final matching with a separate
 maximum-matching program (Appendix~\ref{app:code}). A max-flow computation
 of $\nu$ in every round shows that all these examples are in fact basic-row

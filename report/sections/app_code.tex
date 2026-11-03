@@ -28,14 +28,23 @@ and the numbers $T(s)$, $R(s)$, $Q_n$, $\Ch_n$. \texttt{make\_figures.py}
 draws every figure that shows a matching, dag, or SAP of a specific graph
 by running the simulator, so the pictures show exactly what Algorithm~H does.
 
-\paragraph{Checks.} \texttt{verify.py} runs fourteen named checks, one for
+\paragraph{Search.} \texttt{search.py} is the search of
+Section~\ref{sec:catalog}. For each even $s$ it builds an ordered graph one
+round of the Tchoukaillon schedule at a time, rerunning Algorithm~H
+from~\Hs1 after every proposed change, and replays what it finds with both
+simulators. Its random choices are seeded, so every run finds the same
+graphs; they are written to \texttt{code/data/search\_results.json}. The
+module's documentation describes the method in full.
+
+\paragraph{Checks.} \texttt{verify.py} runs fifteen named checks, one for
 each group of computed statements in these notes, and prints a pass/fail line
 for each. They include the hook description of Lemma~\ref{lem:hooks} and the
 search of Lemmas~\ref{lem:bfs} and~\ref{lem:dfs} for $n\le60$, the count
 $2^m-1$ of SAPs (by exhaustive enumeration for $n\le9$), the counts of
 Theorem~W, the padding to every size, the claim about the corner edge in
 Section~\ref{sec:gamma}, the values of $\Ch_n$ and the comparison with $Q_n$,
-the replay of every example and table, $\nu=f$ in the catalog, the tree of
+the replay of every example and table, $\nu=f$ in the catalog and in the
+graphs found by \texttt{search.py}, the tree of
 Section~\ref{sec:no-cover}, and the six-pair and chain obstructions.
 
 \paragraph{Reproducing.} From \texttt{code/}:
@@ -45,6 +54,7 @@ Section~\ref{sec:no-cover}, and the six-pair and chain obstructions.
 \texttt{python verify.py -{}-full} & full ranges, including $\Ch_n$ for $n\le10^5$\\
 & and all 103680 six-pair inputs (about 40 seconds)\\
 \texttt{python make\_figures.py} & redraws \texttt{report/figures/gen\_*}\\
+\texttt{python search.py 46} & searches every even $s\le46$ (about two minutes)\\
 \texttt{python algorithm\_h.py gamma 5} & prints a run (try \texttt{-{}-help})
 \end{tabular}
 \end{center}

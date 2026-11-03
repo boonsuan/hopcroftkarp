@@ -139,12 +139,12 @@
 
     <section id="open" class="prose">
       <h2><span class="num">6</span>The open question</h2>
-      <p>Can the Tchoukaillon schedule be realized for every $s$, with no condition on the paths? <a class="rep" href="report:Small sizes">Computer search</a> has found inputs for every $s\le41$, and all of them even keep $f$ disjoint SAPs in every round. Any family that works for unboundedly large $s$ needs at least $s/12-O(1)$ <a class="rep" href="report:Realizations need cycles">independent cycles</a> (<a class="ext" href="https://en.wikipedia.org/wiki/Cycle_space">cycle rank</a>).</p>
+      <p>Can the Tchoukaillon schedule be realized for every $s$, with no condition on the paths? <a class="rep" href="report:Small sizes">Computer search</a> has found inputs for every $s\le47$, and all of them even keep $f$ disjoint SAPs in every round. Any family that works for unboundedly large $s$ needs at least $s/12-O(1)$ <a class="rep" href="report:Realizations need cycles">independent cycles</a> (<a class="ext" href="https://en.wikipedia.org/wiki/Cycle_space">cycle rank</a>).</p>
       <p>The <a class="rep" href="report:The input order matters">input order is a genuine obstacle</a>. The six-pair graph below admits a run in which each of the rounds at levels 2, 3, 4 removes a maximal set consisting of a single SAP, which is exactly the schedule for $s=6$. But Algorithm H chooses its SAPs by its own rules: its queue order, the insertion at the front in step H6, and the replacement rule of step H16. Try to find a numbering and list orders that make it follow the schedule, or let the computer try all 103,680 of them.</p>
     </section>
     <div class="widget wide" id="w-sixpair"></div>
     <div class="prose">
-      <p>The <a class="rep" href="report:Computed realizations for small sizes">computed realizations</a> for even $s\le40$ can be explored here; each one runs Algorithm H live and compares the numbers of SAPs with the schedule.</p>
+      <p>The <a class="rep" href="report:Computed realizations for small sizes">computed realizations</a> for even $s\le40$, and those for $s=42$, 44, 46 found by the <a class="ext" href="https://github.com/boonsuan/hopcroftkarp/blob/main/code/search.py">search program</a>, can be explored here; each one runs Algorithm H live and compares the numbers of SAPs with the schedule.</p>
     </div>
     <div class="widget wide" id="w-catalog"></div>
 

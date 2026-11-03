@@ -3,7 +3,7 @@ import './styles/main.css';
 import { initTheme } from './ui/theme';
 import { initSoundControls } from './ui/sound';
 import { initChapterMenu } from './ui/chapters';
-import { caterpillar, catalog, halving, knuth16, staircase, tree8 } from './engine/examples';
+import { caterpillar, halving, knuth16, staircase, tree8 } from './engine/examples';
 import { runAlgorithmH } from './engine/algorithmH';
 import { basicRowLayout, genericLayout, halvingLayout, knuth16Layout, staircaseLayout, tree8Layout } from './widgets/layouts';
 import { mountStepper } from './widgets/stepper';
@@ -49,8 +49,7 @@ mountHyperbola($('w-hyperbola'));
 mountStaircase($('w-staircase'));
 mountSplice($('w-splice'));
 mountSixPair($('w-sixpair'));
-mountCatalog($('w-catalog'), (s) => {
-  const g = catalog[s];
+mountCatalog($('w-catalog'), (s, g) => {
   const run = runAlgorithmH(g, false);
   const layout = basicRowLayout(g, run.initialMatching, run.finalMatching) ?? genericLayout(g);
   stepper.loadGraph(g, `Computed realization, s = ${s}`, layout,

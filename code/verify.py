@@ -564,6 +564,43 @@ def check_basic_rows(options: argparse.Namespace) -> str:
     return f'nu = f in all {rounds} rounds of the 20 catalog entries'
 
 
+def check_search(options: argparse.Namespace) -> str:
+    # search.py is not the earlier program of Section 8.1, but it does what
+    # that section describes. It must find realizations for small s quickly,
+    # and whatever it has stored must replay correctly.
+    import json
+    import search
+
+    def require_realization(adj: list[list[int]], s: int, what: str) -> None:
+        run = checked_run(adj, s)
+        require(run['M'] == run['s'] == s, f'{what}: not perfect')
+        require(len(run['h1_queue']) == s // 2, f'{what}: H1 leaves the wrong number free')
+        require(schedule_of(run) == tchoukaillon_schedule(s), f'{what}: not the schedule')
+        require(all(sap_level_and_nu(adj, rd['matching_before']) == (rd['L'], rd['f_before'])
+                    for rd in run['rounds']), f'{what}: not basic-row')
+        h = s // 2
+        a2 = -(-h // 3)
+        a3 = -(-(h - a2) // 4)
+        require(run['E'] >= 3 * h + 4 * a2 - 8 * (3 * a2 - h) - a3, f'{what}: Theorem C')
+
+    began = time.perf_counter()
+    for s in range(2, 13, 2):
+        finder = search.SizeSearch(s, random.Random(f'{search.DEFAULT_SEED}-{s}'),
+                                   time.perf_counter() + 10)
+        adj = finder.find()
+        require(adj is not None, f's={s}: search.py found nothing within 10 s')
+        require_realization(adj, s, f'search s={s}')
+    seconds = time.perf_counter() - began
+    stored = 0
+    if search.RESULTS_PATH.exists():
+        results = json.loads(search.RESULTS_PATH.read_text(encoding='utf8'))
+        for s, entry in results.items():
+            require_realization(entry['adjacency'], int(s), f'search_results.json s={s}')
+            stored += 1
+    return (f'search.py found s = 2..12 in {seconds:.1f}s; '
+            f'{stored} stored results replayed, all basic-row')
+
+
 # ----------------------------------------------------------------------------
 # Section 8.2: the 8-pair tree
 
@@ -763,6 +800,7 @@ CHECKS: dict[str, tuple[Callable[[argparse.Namespace], str], str]] = {
     'halving': (check_halving, 'Sec. 7.2, App. B, Corollary L'),
     'catalog': (check_catalog, 'Sec. 8.1, App. C, Theorem C on the catalog'),
     'basic-rows': (check_basic_rows, 'Sec. 8.1: every catalog entry is basic-row'),
+    'search': (check_search, 'Sec. 8.1: search.py works; data/search_results.json replays'),
     'tree8': (check_tree8, 'Sec. 8.2: an operational realization that is not basic-row'),
     'six-pair': (check_six_pair, 'Sec. 8.5: the six-pair ordering obstruction'),
     'chain': (check_chain, 'Sec. 8.5: triangular chain graphs'),

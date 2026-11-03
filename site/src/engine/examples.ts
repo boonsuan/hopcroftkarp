@@ -5,6 +5,7 @@
  */
 import type { OrderedGraph } from './algorithmH';
 import catalogJson from '../data/catalog.json';
+import searchJson from '../data/search.json';
 
 /** A cell (row a, column c) of a staircase graph. */
 export interface Cell {
@@ -128,10 +129,12 @@ export function caterpillar(K: number): OrderedGraph {
 /** Neighbour sets of the six-pair graph of report §8.5 (girl g's set of boys). */
 export const sixPairNeighbours: number[][] = [[1], [1, 2, 5], [3], [2, 3, 4], [3, 5], [5, 6]];
 
+function bySize(json: Record<string, { adjacency: number[][] }>): Record<number, OrderedGraph> {
+  return Object.fromEntries(Object.entries(json).map(([s, v]) => [Number(s), { lists: v.adjacency, N: Number(s) }]));
+}
+
 /** The computed realizations of Appendix C, by size s (even s ≤ 40). */
-export const catalog: Record<number, OrderedGraph> = Object.fromEntries(
-  Object.entries(catalogJson as Record<string, { adjacency: number[][] }>).map(([s, v]) => [
-    Number(s),
-    { lists: v.adjacency, N: Number(s) },
-  ]),
-);
+export const catalog = bySize(catalogJson);
+
+/** The realizations found by `code/search.py` beyond the catalog (s = 42, 44, 46). */
+export const searchFound = bySize(searchJson);
