@@ -155,8 +155,11 @@ export function mountStepper(root: HTMLElement, examples: StepperExample[], opts
     editor.append(textarea, h('div', { class: 'controls' }, [runBtn, errorBox]));
   }
 
+  // The graph last loaded from elsewhere, so that its menu entry can be chosen again.
+  let custom: StepperExample | undefined;
+
   function load(id: string): void {
-    example = examples.find((e) => e.id === id) ?? examples[0];
+    example = (id === 'custom' ? custom : undefined) ?? examples.find((e) => e.id === id) ?? examples[0];
     if (exampleSelect) exampleSelect.value = example.id;
     run = runAlgorithmH(example.graph);
     reset();
@@ -165,7 +168,7 @@ export function mountStepper(root: HTMLElement, examples: StepperExample[], opts
   /** Load a graph from elsewhere (the sandbox editor, the catalog); it gets its own entry in the menu. */
   function loadGraph(graph: OrderedGraph, name: string, layout?: Layout, blurbText?: string): void {
     run = runAlgorithmH(graph);
-    example = { id: 'custom', name, graph, layout: layout ?? genericLayout(graph), blurb: blurbText };
+    example = custom = { id: 'custom', name, graph, layout: layout ?? genericLayout(graph), blurb: blurbText };
     if (exampleSelect) {
       let opt = exampleSelect.querySelector<HTMLOptionElement>('option[value="custom"]');
       if (!opt) {
