@@ -45,10 +45,13 @@ $s$&$E$&rounds&\Hs1&$W_5$&$W_{13}$&$W_{11}$&SAPs removed\\
 \end{center}
 
 The program \texttt{search.py} of Section~\ref{sec:catalog} finds different
-realizations for every even $s\le46$. They have the same matching
-after~\Hs1 and the same order of the free girls, and their ordered lists are
-in the file \texttt{code/data/search\_results.json}. Those beyond the table
-above are
+realizations for every even $s\le46$, and with other seeds (2, 5, 3, 2)
+for $s=48$, 52, 54, 56; the realization for $s=50$ is obtained from the one
+for $s=48$ by Proposition~\ref{prop:pad}. Except for $s=50$, whose two new
+girls are numbered first, they have the same matching after~\Hs1 and the
+same order of the free girls. Their ordered lists are in the files
+\texttt{code/data/search\_results.json} ($s\le46$) and
+\texttt{code/data/larger\_sizes.json}. Those beyond the table above are
 \begin{center}\small
 \setlength{\tabcolsep}{5pt}
 \begin{tabular}{rrrrrrrl}
@@ -58,7 +61,12 @@ $s$&$E$&rounds&\Hs1&$W_5$&$W_{13}$&$W_{11}$&SAPs removed\\
 42&121&11&65&1138&290&394&$7,4,2,2,1,1,1,1,1,1$\\
 44&121&11&67&1092&290&393&$8,4,2,2,1,1,1,1,1,1$\\
 46&127&11&71&1123&298&408&$8,4,3,2,1,1,1,1,1,1$\\
+48&140&12&79&1451&365&504&$8,4,3,2,1,1,1,1,1,1,1$\\
+50&144&12&81&1494&367&526&$9,4,3,2,1,1,1,1,1,1,1$\\
+52&147&12&74&1460&370&519&$9,5,3,2,1,1,1,1,1,1,1$\\
+54&155&12&86&1422&392&512&$9,5,3,2,2,1,1,1,1,1,1$\\
+56&161&12&89&1608&385&559&$10,5,3,2,2,1,1,1,1,1,1$\\
 \bottomrule
 \end{tabular}
 \end{center}
-and by Proposition~\ref{prop:odd} they cover every $s\le47$.
+and by Proposition~\ref{prop:odd} they cover every $s\le57$.

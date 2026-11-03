@@ -1,10 +1,10 @@
 /**
- * The computed realizations of Appendix C, and those found by search.py
- * beyond them: run Algorithm H on each one and compare the numbers of SAPs
+ * The computed realizations of Appendix C, and those beyond them (found by
+ * search.py, or by padding a smaller one): run Algorithm H on each one and compare the numbers of SAPs
  * with the Tchoukaillon schedule.
  */
 import { runAlgorithmH, type OrderedGraph } from '../engine/algorithmH';
-import { catalog, searchFound } from '../engine/examples';
+import { catalog, padded, searchFound } from '../engine/examples';
 import { schedule } from '../engine/numbers';
 import { button, h, select } from '../ui/controls';
 import * as sound from '../ui/sound';
@@ -14,7 +14,7 @@ export function mountCatalog(root: HTMLElement, openInStepper: (s: number, g: Or
   const graphs = { ...catalog, ...searchFound };
   const sizes = Object.keys(graphs).map(Number).sort((a, b) => a - b);
   let s = 16;
-  const sel = select('Size', sizes.map((v) => [String(v), v in catalog ? `s = ${v}` : `s = ${v} (search.py)`]),
+  const sel = select('Size', sizes.map((v) => [String(v), v in catalog ? `s = ${v}` : padded.has(v) ? `s = ${v} (padding)` : `s = ${v} (search.py)`]),
     (v) => { s = Number(v); render(true); });
   sel.input.value = String(s);
   const open = button(`Watch it in the stepper ${icon.up}`, () => openInStepper(s, graphs[s]));
@@ -36,7 +36,8 @@ export function mountCatalog(root: HTMLElement, openInStepper: (s: number, g: Or
     </table>`;
     const E = g.lists.reduce((a, r) => a + r.length, 0);
     const free = run.initialQueue.length;
-    const source = s in catalog ? 'From Appendix C' : 'Found by search.py';
+    const source = s in catalog ? 'From Appendix C'
+      : padded.has(s) ? `The padding of s = ${s - 2} (Prop. 8.8)` : 'Found by search.py';
     note.innerHTML = `${source}: ${s} girls and boys, ${E} edges. Step H1 leaves ${free} girl${free === 1 ? '' : 's'} free; ` +
       `${ok ? 'every round matches the schedule' : 'the run differs from the schedule'}, ${run.rounds.length + 1} rounds in all.`;
     if (audible) { if (ok) sound.note(5, 0.3); else sound.blocked(); }

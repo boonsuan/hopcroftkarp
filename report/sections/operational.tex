@@ -19,8 +19,10 @@ proposed extension and rejecting any extension that changed an earlier
 round. Its program is not among the accompanying programs, but the inputs
 it found are. The program \texttt{search.py} (Appendix~\ref{app:code}) is a
 new search of the same kind. It finds other graphs, for every even
-$s\le46$, so by the next proposition the schedule can be realized for every
-$s\le47$. It starts from the normal form of Appendix~\ref{app:catalog} and
+$s\le46$ with its default seed and, with other seeds, also for $s=48$, 52,
+54, and~56. With Proposition~\ref{prop:pad} for $s=50$ and the next
+proposition for odd~$s$, the schedule can therefore be realized for every
+$s\le57$. It starts from the normal form of Appendix~\ref{app:catalog} and
 designs one round at a time, in the manner of Knuth's matrices
 (answer~15(d)): at level~$L$ it splits the rows into groups of at most
 $L+1$, and for each group it adds the edges of one SAP that merges the
@@ -28,8 +30,10 @@ group's rows, placed in the lists so that Algorithm~H should find exactly
 that SAP. After each proposed group it reruns the whole execution
 from~\Hs1, and it rejects the group if an earlier round changes or the
 planned SAPs are not found. Neither search is guaranteed to succeed
-(\texttt{search.py} finds nothing for $s=48$, 50, or~52 in two minutes
-each), and neither proves anything about larger~$s$. We have replayed every
+(with its default seed \texttt{search.py} finds nothing for $s=48$, 50,
+or~52 in two minutes each, and five other seeds found nothing for $s=58$, 60,
+or~62 in fifteen minutes each), and neither proves anything about
+larger~$s$. We have replayed every
 example from both searches from \Hs1 with two independent implementations
 of Algorithm~H and checked its final matching with a separate
 maximum-matching program (Appendix~\ref{app:code}). A max-flow computation
@@ -405,6 +409,7 @@ schedule changes in a very controlled way. Write $f_L(h)$ and $a_L(h)$ for
 the schedule with $f_2(h)=h$, extended by zeros.
 
 \begin{lemma}
+\label{lem:step}
 Let $K$ be the first level~$L\ge2$ such that $L+1$ divides $f_L(h)$. Then
 $f_L(h+1)=f_L(h)+1$ for $2\le L\le K$ and $f_L(h+1)=f_L(h)$ for $L>K$; so
 $a_L(h+1)=a_L(h)+\Iv{L=K}$.
@@ -417,8 +422,61 @@ of $1$ at level~2 and follow it.
 \end{proof}
 
 So adding two pairs should add one free girl, keep every count of SAPs
-except one extra at level~$K$, and then rejoin the old schedule. Doing this
-with a fixed set of edges, while preserving every earlier distance and
-every earlier \A{BLINK} order, is what we have not managed: an edge added
-for a later round can create a shorter path in an earlier one, or change
-the order in which an earlier search discovers vertices.
+except one extra at level~$K$, and then rejoin the old schedule. When $K=2$,
+that is, when $3\mid h$, this can be done.
+
+\begin{proposition}
+\label{prop:pad}
+Let an ordered graph $G$ realize the schedule for $s=2h$, where $3\mid h$.
+Let $q$ be the first girl in \A{QUEUE} after step~\Hs1, let $b$ be the first
+boy on her list, and let $x$ be the girl whom~\Hs1 matches to~$b$. Form $G^+$
+by adding girls $u$ and $w$, numbered below all girls of~$G$, boys $v$
+and~$z$, the lists $u\colon[v]$ and $w\colon[v,z]$, and the edge $xz$, placed
+in $x$'s list immediately after~$b$. Then $G^+$ realizes the schedule for
+$s+2$, and it is basic-row if $G$ is.
+\end{proposition}
+
+\begin{proof}
+Step~\Hs1 scans the girls of $G$ first and does what it did in~$G$: when $x$
+is scanned, the boys before $b$ in her list are taken and $b$ is free, so
+she never reaches~$z$. Then $w$ takes~$v$, and $u$ remains free. So
+\A{QUEUE} is that of~$G$ followed by~$u$, with $h+1$ girls.
+
+In the first dag, $q$ is scanned first. Her first boy $b$ is matched,
+because $q$ is free after a maximal matching; so $b$ is the first boy of
+level~1, and $x$ is the first girl of level~1. In her list, $x$ meets
+matched boys (all taken by~\Hs1), then her mate~$b$, then $z$, who is free:
+so $L=2$ and $z$ is the first root. The other free boys of level~2 are
+entered in the same order as in~$G$, because only matched boys, which are
+never roots, are treated differently once $L$ is known. Girl~$u$ is last at
+level~0, so $w$ is last at level~1, and step~\Hs6 puts her at the head of
+$\A{BLINK}[z]$. The search from~$z$ therefore takes~$w$ and then~$v$, whose
+only girl at level~0 is~$u$: it finds the SAP $u\sg v\db w\sg z$. Since $u$
+is the last free girl, step~\Hs{16} moves nobody. From then on the roots,
+the lists \A{BLINK} of the boys of~$G$ (none of which contains a new girl),
+and \A{QUEUE} are as in~$G$, so the round finds the $a_2(h)$ SAPs of~$G$ in
+the same order, with the same moves in step~\Hs{16}. By
+Lemma~\ref{lem:step} with $K=2$, that makes $a_2(h+1)$ SAPs, and after this
+round the two schedules agree.
+
+In later rounds $u$, $v$, $w$, $z$ are matched, and the only edge between them
+and~$G$ is~$xz$. The breadth-first search may enter $z$, $w$, $v$, $u$
+from~$x$, but they lead to no free boy, they do not change the relative
+order of the vertices of~$G$ in \A{MARKED} or \A{QUEUE}, and no list
+$\A{BLINK}[b']$ with $b'$ in~$G$ gains a girl. The depth-first search starts
+at free boys of~$G$, and from a boy of~$G$ it reaches only girls of~$G$,
+whose mates are boys of~$G$; so it never leaves~$G$. Every later round is
+therefore the corresponding round of~$G$. Finally, in the first dag round
+the $h$ disjoint SAPs of a basic-row~$G$ and the path $u\sg v\db w\sg z$
+give $\nu=h+1=f$, and afterwards no augmenting path meets the new vertices.
+\end{proof}
+
+The edge $xz$ matters. Without it $z$ is the last root, the new SAP is found
+last, and by then step~\Hs{16} may have moved~$u$ into the place of a girl
+of~$G$, which changes the order of later searches; for $s=42$ and $s=54$
+the padding then fails. For $K>2$ the extra free girl must survive several
+rounds, and doing this with a fixed set of edges, while preserving every
+earlier distance and every earlier \A{BLINK} order, is what we have not
+managed: an edge added for a later round can create a shorter path in an
+earlier one, or change the order in which an earlier search discovers
+vertices.

@@ -25,6 +25,7 @@ Run everything from this directory:
 | `python algorithm_h.py gamma 5` | prints the rounds of a run, as in the tables of the notes | instant |
 | `python examples.py knuth16` | prints the girl lists of an example | instant |
 | `python search.py 46` | searches for Tchoukaillon realizations, every even s ≤ 46, and rewrites `data/search_results.json` (see [Search](#search)) | about 2 min |
+| `python padding.py 48` | pads the realization for s = 48 to one for s = 50 (Proposition 8.8) and replays it | instant |
 
 `python verify.py --list` lists the checks; `--only NAME ...` runs some of
 them. Every script takes `--help`.
@@ -47,8 +48,10 @@ python -c "from algorithm_h import run_h, format_run; print(format_run(run_h([[1
 | `make_figures.py` | Draws the figures `gen_*.tex` and the plot data `gen_*.dat` from actual runs. |
 | `export_traces.py` | Writes golden traces for testing a port of the simulator. |
 | `search.py` | A search for ordered graphs that realize the Tchoukaillon schedule (below). |
+| `padding.py` | Proposition 8.8: a realization for s = 2h with 3 \| h gives one for s + 2. |
 | `data/numerical_witnesses.json` | The ordered graphs of Appendix C, for even s = 2, 4, …, 40. |
 | `data/search_results.json` | The graphs found by `python search.py 46`, for even s = 2, 4, …, 46, with numbers of their runs. |
+| `data/larger_sizes.json` | Realizations for s = 48, 50, …, 56 (Appendix C), each with the command that makes it. |
 
 ## Conventions
 
@@ -113,6 +116,7 @@ theorem).
 | `catalog` | Section 8.1 and Appendix C: every s ≤ 41 follows the Tchoukaillon schedule (Proposition 8.1 for odd s); every number of the table; the H1 matching; Theorem C's inequality |
 | `basic-rows` | Section 8.1: ν = f in every round of every catalog entry (max flow) |
 | `search` | Section 8.1: `search.py` finds realizations for s = 2, 4, …, 12 within 10 s each; every graph in `data/search_results.json` follows the schedule, is basic-row and satisfies Theorem C's inequality |
+| `padding` | Section 8.6 and Appendix C: Proposition 8.8 applied to every stored realization with 3 \| s/2 gives a basic-row realization for s + 2; every graph in `data/larger_sizes.json` replays, and the one for s = 50 is the padding of the one for s = 48 |
 | `tree8` | Section 8.2: the table, the three augmenting paths, ν = 1 < f = 2 |
 | `six-pair` | Section 8.5: the unique three-couple maximal matching, the abstract schedule, and no input follows it. A random sample of 5000 of the 103680 inputs by default; all of them, with the counts 103680 and 740, with `--exhaustive` or `--full` |
 | `chain` | Section 8.5: the abstract SAPs of Δ_6, and 3a > h (Proposition 8.6) on random inputs with h ≤ 6 |
@@ -157,7 +161,11 @@ about 16 s with the default seed (s = 34 is the slowest size, about 10 s).
 `python search.py 42 60` finds 42, 44 and 46 (13–53 s each) and 54 and 56,
 but not 48, 50, 52, 58 or 60 within the default limit of 120 s per size; at 48, 50
 and 52 one level has a single group of exactly L + 1 rows, which forces every
-cut. Not finding a size says nothing about whether it can be realized.
+cut. Other seeds do better: `--seed 2` finds 48 in about 30 s and `--seed 5`
+finds 52 in about 5 minutes, and 50 follows from 48 by `padding.py`
+(`data/larger_sizes.json` records how each larger size was made). Sizes 58, 60
+and 62 resisted five seeds each at 15 minutes per seed. Not finding a size says
+nothing about whether it can be realized.
 
 ## Golden traces
 

@@ -564,24 +564,26 @@ def check_basic_rows(options: argparse.Namespace) -> str:
     return f'nu = f in all {rounds} rounds of the 20 catalog entries'
 
 
+def require_realization(adj: list[list[int]], s: int, what: str) -> None:
+    """adj realizes the schedule for even s, is basic-row, and satisfies Theorem C."""
+    run = checked_run(adj, s)
+    require(run['M'] == run['s'] == s, f'{what}: not perfect')
+    require(len(run['h1_queue']) == s // 2, f'{what}: H1 leaves the wrong number free')
+    require(schedule_of(run) == tchoukaillon_schedule(s), f'{what}: not the schedule')
+    require(all(sap_level_and_nu(adj, rd['matching_before']) == (rd['L'], rd['f_before'])
+                for rd in run['rounds']), f'{what}: not basic-row')
+    h = s // 2
+    a2 = -(-h // 3)
+    a3 = -(-(h - a2) // 4)
+    require(run['E'] >= 3 * h + 4 * a2 - 8 * (3 * a2 - h) - a3, f'{what}: Theorem C')
+
+
 def check_search(options: argparse.Namespace) -> str:
     # search.py is not the earlier program of Section 8.1, but it does what
     # that section describes. It must find realizations for small s quickly,
     # and whatever it has stored must replay correctly.
     import json
     import search
-
-    def require_realization(adj: list[list[int]], s: int, what: str) -> None:
-        run = checked_run(adj, s)
-        require(run['M'] == run['s'] == s, f'{what}: not perfect')
-        require(len(run['h1_queue']) == s // 2, f'{what}: H1 leaves the wrong number free')
-        require(schedule_of(run) == tchoukaillon_schedule(s), f'{what}: not the schedule')
-        require(all(sap_level_and_nu(adj, rd['matching_before']) == (rd['L'], rd['f_before'])
-                    for rd in run['rounds']), f'{what}: not basic-row')
-        h = s // 2
-        a2 = -(-h // 3)
-        a3 = -(-(h - a2) // 4)
-        require(run['E'] >= 3 * h + 4 * a2 - 8 * (3 * a2 - h) - a3, f'{what}: Theorem C')
 
     began = time.perf_counter()
     for s in range(2, 13, 2):
@@ -599,6 +601,29 @@ def check_search(options: argparse.Namespace) -> str:
             stored += 1
     return (f'search.py found s = 2..12 in {seconds:.1f}s; '
             f'{stored} stored results replayed, all basic-row')
+
+
+def check_padding(options: argparse.Namespace) -> str:
+    # Proposition 8.8 on every stored realization with 3 | h, and the larger
+    # sizes of Appendix C, of which s = 50 is the padding of s = 48.
+    import json
+    import padding
+
+    padded = 0
+    for name in ('numerical_witnesses.json', 'search_results.json', 'larger_sizes.json'):
+        entries = json.loads((padding.DATA / name).read_text(encoding='utf8'))
+        for s, entry in entries.items():
+            if (int(s) // 2) % 3 == 0 and int(s) > 0:
+                require_realization(padding.pad(entry['adjacency']), int(s) + 2,
+                                    f'padding of {name} s={s}')
+                padded += 1
+    larger = json.loads((padding.DATA / 'larger_sizes.json').read_text(encoding='utf8'))
+    for s, entry in larger.items():
+        require_realization(entry['adjacency'], int(s), f'larger_sizes.json s={s}')
+    require(larger['50']['adjacency'] == padding.pad(larger['48']['adjacency']),
+            'larger_sizes.json: s=50 is not the padding of s=48')
+    return (f'{padded} paddings s -> s + 2 replayed, all basic-row; '
+            f's = {", ".join(sorted(larger, key=int))} replayed')
 
 
 # ----------------------------------------------------------------------------
@@ -801,6 +826,7 @@ CHECKS: dict[str, tuple[Callable[[argparse.Namespace], str], str]] = {
     'catalog': (check_catalog, 'Sec. 8.1, App. C, Theorem C on the catalog'),
     'basic-rows': (check_basic_rows, 'Sec. 8.1: every catalog entry is basic-row'),
     'search': (check_search, 'Sec. 8.1: search.py works; data/search_results.json replays'),
+    'padding': (check_padding, 'Sec. 8.6, App. C: Prop. 8.8 (padding when 3 | h); larger sizes'),
     'tree8': (check_tree8, 'Sec. 8.2: an operational realization that is not basic-row'),
     'six-pair': (check_six_pair, 'Sec. 8.5: the six-pair ordering obstruction'),
     'chain': (check_chain, 'Sec. 8.5: triangular chain graphs'),

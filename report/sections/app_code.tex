@@ -35,8 +35,11 @@ from~\Hs1 after every proposed change, and replays what it finds with both
 simulators. Its random choices are seeded, so every run finds the same
 graphs; they are written to \texttt{code/data/search\_results.json}. The
 module's documentation describes the method in full.
+\texttt{padding.py} implements Proposition~\ref{prop:pad}, and
+\texttt{code/data/larger\_sizes.json} holds the realizations for
+$s=48,\ldots,56$, each with the command that makes it.
 
-\paragraph{Checks.} \texttt{verify.py} runs fifteen named checks, one for
+\paragraph{Checks.} \texttt{verify.py} runs sixteen named checks, one for
 each group of computed statements in these notes, and prints a pass/fail line
 for each. They include the hook description of Lemma~\ref{lem:hooks} and the
 search of Lemmas~\ref{lem:bfs} and~\ref{lem:dfs} for $n\le60$, the count
@@ -44,7 +47,9 @@ $2^m-1$ of SAPs (by exhaustive enumeration for $n\le9$), the counts of
 Theorem~W, the padding to every size, the claim about the corner edge in
 Section~\ref{sec:gamma}, the values of $\Ch_n$ and the comparison with $Q_n$,
 the replay of every example and table, $\nu=f$ in the catalog and in the
-graphs found by \texttt{search.py}, the tree of
+graphs found by \texttt{search.py}, the padding of
+Proposition~\ref{prop:pad} on every stored realization with $3\mid s/2$, the
+tree of
 Section~\ref{sec:no-cover}, and the six-pair and chain obstructions.
 
 \paragraph{Reproducing.} From \texttt{code/}:

@@ -136,5 +136,10 @@ function bySize(json: Record<string, { adjacency: number[][] }>): Record<number,
 /** The computed realizations of Appendix C, by size s (even s ≤ 40). */
 export const catalog = bySize(catalogJson);
 
-/** The realizations found by `code/search.py` beyond the catalog (s = 42, 44, 46). */
+/** The realizations beyond the catalog (s = 42, 44, …, 56): found by `code/search.py`, except the padded ones. */
 export const searchFound = bySize(searchJson);
+
+/** Sizes whose realization is the padding of the one for s − 2 (report Prop. 8.8). */
+export const padded = new Set(
+  Object.entries(searchJson as Record<string, { padded?: boolean }>).filter(([, v]) => v.padded).map(([s]) => Number(s)),
+);

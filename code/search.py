@@ -119,7 +119,8 @@ What it does and does not show
 With the default settings the search finds every even s <= 46 on a laptop,
 in about 16 s for s <= 40 and under a minute for each of 42, 44, 46 (these
 are the stored results, written by `python search.py 46`); it
-also finds 54 and 56, but not 48, 50, 52, 58 or 60 within 120 s each. The
+also finds 54 and 56, but not 48, 50, 52, 58 or 60 within 120 s each
+(other seeds find 48 and 52; see data/larger_sizes.json). The
 hardest sizes are those where a level has a single group of exactly L + 1
 rows (s = 34 at L = 5; s = 48, 50, 52 at L = 6): then all cuts are forced
 (c_i = i), and the edges needed are often among those that disturb an

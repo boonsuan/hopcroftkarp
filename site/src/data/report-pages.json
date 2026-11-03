@@ -35,15 +35,15 @@
   "Small sizes": 28,
   "Operational is weaker than basic-row": 28,
   "The shape forced by the first matching": 29,
-  "Realizations need cycles": 29,
+  "Realizations need cycles": 30,
   "The input order matters": 31,
   "What an induction would need": 33,
-  "Simpler examples for the running time": 33,
+  "Simpler examples for the running time": 34,
   "Credits, literature, and open problems": 35,
   "Where the ideas come from": 35,
-  "Open problems": 35,
+  "Open problems": 36,
   "An input order for Knuth's sixteen-pair graph": 36,
   "The halving graphs": 37,
   "Computed realizations for small sizes": 38,
-  "Programs and checks": 38
+  "Programs and checks": 39
 }
