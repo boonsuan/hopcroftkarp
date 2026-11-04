@@ -12,8 +12,21 @@ import * as sound from '../ui/sound';
 export function mountSplice(root: HTMLElement): void {
   let L = 5, i = 2, j = 4, show = true;
   const lCtl = slider('L', 3, 7, L, (v) => { L = v; j = Math.min(j, L); i = Math.min(i, j - 1); sync(); draw(); sound.tick(); });
-  const iCtl = slider('i', 1, L - 1, i, (v) => { i = Math.min(v, j - 1); sync(); draw(); sound.note(i + 2, 0.35); });
-  const jCtl = slider('j', 2, L, j, (v) => { j = Math.max(v, i + 1); sync(); draw(); sound.note(j + 2, 0.35); });
+  // i < j always. A thumb dragged past that bound is put back, and the browser
+  // then reports the same overshoot on every move of the pointer, so redraw and
+  // sound only when the value really changes.
+  const iCtl = slider('i', 1, L - 1, i, (v) => {
+    const next = Math.min(v, j - 1);
+    const changed = next !== i;
+    i = next; sync();
+    if (changed) { draw(); sound.note(i + 2, 0.35); }
+  });
+  const jCtl = slider('j', 2, L, j, (v) => {
+    const next = Math.max(v, i + 1);
+    const changed = next !== j;
+    j = next; sync();
+    if (changed) { draw(); sound.note(j + 2, 0.35); }
+  });
   const showCtl = checkbox('Show the splice', (v) => { show = v; draw(); if (v) sound.success(); }, true);
   root.append(h('div', { class: 'controls' }, [lCtl.wrap, iCtl.wrap, jCtl.wrap, showCtl]));
   const scene = new Scene(root, ['sap', 'edges', 'paths', 'nodes', 'labels'], 'Splicing two augmenting paths along a selected path');
